@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Requests/Request.h"
 #include <vector>
-#include "SocketIO.h"
 
 namespace SocketIO
 {
@@ -10,7 +10,12 @@ namespace SocketIO
 	public:
 		static Writer& getWriter();
 		
-		int write(int socket, const void* data, MsgLenType dataLen);
+		int write(
+			int socket,
+			const void* data,
+			Requests::RequestLenType dataLen);
+		
+		int write(int socket, const Requests::Request& request);
 		
 	private:
 		static Writer instance;

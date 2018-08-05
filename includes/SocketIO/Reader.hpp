@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Requests/Request.h"
 #include <vector>
 
 namespace SocketIO
@@ -10,6 +11,7 @@ namespace SocketIO
 		static Reader& getInstance();
 		
 		int read(int socket, const unsigned char** result, size_t& resultLen);
+		int read(int socket, Requests::Request& requestResult);
 		
 	private:
 		static Reader instance;
