@@ -1,36 +1,18 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
-project(BlackjackServer)
+project(Services)
 
 set(CMAKE_CXX_STANDARD 11)
 
 file(GLOB srcs "*.cpp" "*.h" "*.hpp")
-
-file(GLOB models
-	"./Models/*.cpp"
-	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/Models/*.h")
-file(GLOB views
-	"./Views/*.cpp"
-	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/Views/*.hpp")
-file(GLOB controllers
-	"./Controllers/*.cpp"
-	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/Controllers/*.hpp")
-
-source_group("Models" FILES ${models})
-source_group("Views" FILES ${views})
-source_group("Controllers" FILES ${controllers})
 
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.h"
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.hpp"
 )
 
-add_executable(${PROJECT_NAME}
+add_library(${PROJECT_NAME} STATIC
 	${srcs}
 	${includes}
-	
-	${models}
-	${views}
-	${controllers}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -38,11 +20,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 	${CMAKE_SOURCE_DIR}/includes/)
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
-	NetworkTools
-	Services
-	Requests
+	# Requests
 	SocketConnection
-	DataLayer
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

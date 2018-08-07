@@ -56,7 +56,7 @@ void Client::setup(const char* ip, int port)
 		throw SocketExceptionStr(STR("connect: " + std::strerror(errno)));
 	
 	m_connection.socket = socketDescriptor;
-	m_connection.address = *reinterpret_cast<sockaddr*>(&serverAddr);
+	m_connection.address = serverAddr;
 	
 	for (const auto& eventHandler : m_onConnectEventHandlers)
 	{

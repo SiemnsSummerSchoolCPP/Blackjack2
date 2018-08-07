@@ -64,6 +64,11 @@ static void addUserInLobbyControllerActions(
 	{
 		return ctrl.sendMsg(input);
 	});
+	
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.changeName(input);
+	});
 }
 
 void continuouslyParseUserInput(

@@ -193,7 +193,7 @@ void Server::parseServerActivity()
 
 	auto connection = Connection();
 	connection.socket = newSocket;
-	connection.address = *reinterpret_cast<sockaddr*>(&m_address);
+	connection.address = m_address;
 	m_connections.push_back(connection);
 
 	for (const auto& eventHandler : m_newClientEventHandlers)

@@ -6,6 +6,7 @@ add_subdirectory(Requests)
 add_subdirectory(NetworkTools)
 add_subdirectory(KeyboardInputTools)
 
+add_subdirectory(Services)
 add_subdirectory(DataLayer)
 add_subdirectory(BlackjackServer)
 add_subdirectory(BlackjackClient)

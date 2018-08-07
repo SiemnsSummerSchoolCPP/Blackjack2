@@ -33,8 +33,31 @@ bool LobbyController::sendMsg(std::string userInput) const
 	}
 	
 	m_networkClient.sendRequest(Requests::Request(
-		BlackjackServer::LobbyController::RequestHeaders::kSendMsg,
+		BlackjackServer::Controllers::LobbyController::RequestHeaders::kSendMsg,
 		msg
+	));
+	
+	return true;
+}
+
+bool LobbyController::changeName(std::string userInput) const
+{
+	static const auto regexPattern = std::regex(
+		"^set name to (.*)$");
+
+	std::smatch regexSearchBuf;
+	
+	const auto itMatches = std::regex_search(
+		userInput,
+		regexSearchBuf,
+		regexPattern);
+	
+	if (!itMatches)
+		return false;
+	
+	m_networkClient.sendRequest(Requests::Request(
+		BlackjackServer::Controllers::LobbyController::RequestHeaders::kSetName,
+		regexSearchBuf[1].str()
 	));
 	
 	return true;

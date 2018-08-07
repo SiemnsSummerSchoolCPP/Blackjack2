@@ -3,7 +3,8 @@
 #include "NetworkTools/NetworkHostModel.h"
 #include "Controllers/LobbyController.hpp"
 #include "SocketConnection/Exceptions.h"
-#include "BlackjackClient/Controllers/MsgReadController.hpp"
+#include "Services/Logger.hpp"
+#include "DataLayer/BjDatabase.hpp"
 #include <iostream>
 
 using namespace BlackjackServer;
@@ -20,13 +21,26 @@ using namespace Requests;
 		});																	\
 
 static void addLobbyControllerActions(
-	LobbyController& ctrl,
+	Controllers::LobbyController& ctrl,
 	NetworkTools::RequestMapper& mapper)
 {
 	ADD_CONTROLLER_ACTION(
 		mapper,
-		LobbyController::RequestHeaders::kSendMsg,
+		NetworkTools::NetworkEntity::kNewConnectionHeader,
+		ctrl.clientJoin);
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		NetworkTools::NetworkEntity::kEndConnectionHeader,
+		ctrl.clientLeave);
+
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::LobbyController::RequestHeaders::kSendMsg,
 		ctrl.sendMsg);
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::LobbyController::RequestHeaders::kSetName,
+		ctrl.changeName);
 }
 
 static NetworkTools::NetworkHost buildNetworkHost(
@@ -48,7 +62,7 @@ static NetworkTools::NetworkHost buildNetworkHost(
 	}
 }
 
-void continouslyParseClientsInput(NetworkTools::NetworkHost& networkHost)
+void continouslyParseNetworkInput(NetworkTools::NetworkHost& networkHost)
 {
 	while (true)
 	{
@@ -81,14 +95,25 @@ int main(const int argc, const char* const* const argv)
 	auto requestMapper = NetworkTools::RequestMapper();
 	auto networkHost = buildNetworkHost(port, requestMapper);
 	
+	// Declare stuff.
+	auto lobbyViews = Views::LobbyViews();
+	auto dbContext = DataLayer::BjDatabase();
+	
+	// Services.
+	auto logger = Services::Logger();
+	
 	// Declare controllers.
-	auto lobbyController = LobbyController(networkHost);
+	auto lobbyController = Controllers::LobbyController(
+		networkHost,
+		lobbyViews,
+		logger,
+		dbContext);
 	
 	// Map controller's actions.
 	addLobbyControllerActions(lobbyController, requestMapper);
 
 	// Start.
-	continouslyParseClientsInput(networkHost);
+	continouslyParseNetworkInput(networkHost);
 
 	return 0;
 }
