@@ -4,6 +4,8 @@
 
 using namespace SocketIO;
 
+Writer Writer::instance = Writer();
+
 Writer& Writer::getWriter()
 {
 	return instance;
@@ -17,7 +19,7 @@ Writer& Writer::getWriter()
 int Writer::write(
 	const int socket,
 	const void* const data,
-	const Requests::RequestLenType dataLen)
+	const Requests::RequestLen dataLen)
 {
 	const auto requiredBufLen = dataLen + sizeof(dataLen);
 	if (m_buf.size() < requiredBufLen)
@@ -64,4 +66,23 @@ int Writer::write(const int socket, const Requests::Request& request)
 		request.dataLen;
 	
 	return ::write(socket, m_buf.data(), totalMsgLen);
+}
+
+int Writer::broadcast(
+	const std::vector<int>& sockets,
+	const Requests::Request& request,
+	const bool ignoreFailures)
+{
+	int finalResult = 0;
+	
+	for (const auto& socket : sockets)
+	{
+		const auto writeResult = getWriter().write(socket, request);
+		finalResult = std::min(finalResult, writeResult);
+		if (writeResult <= 0 && !ignoreFailures)
+		{
+			return finalResult;
+		}
+	}
+	return finalResult;
 }

@@ -4,6 +4,8 @@
 
 using namespace SocketIO;
 
+Reader Reader::instance = Reader();
+
 Reader& Reader::getInstance()
 {
 	return instance;
@@ -14,7 +16,7 @@ int Reader::read(
 	const unsigned char** const result,
 	size_t& resultLen)
 {
-	Requests::RequestLenType msgLen;
+	Requests::RequestLen msgLen;
 	int readValue;
 	
 	readValue = ::read(socket, &msgLen, sizeof(msgLen));

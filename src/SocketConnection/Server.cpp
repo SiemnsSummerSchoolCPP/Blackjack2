@@ -197,25 +197,22 @@ void Server::parseServerActivity()
 	m_connections.push_back(connection);
 
 	for (const auto& eventHandler : m_newClientEventHandlers)
-		eventHandler(*this, connection);
+		eventHandler(connection);
 }
 
 void Server::parseClientActivity(const Connection& connection)
 {
-	const unsigned char* readBuf;
-	size_t readLen;
+	Requests::Request request;
 	
 	const auto readResult = SocketIO::Reader::getInstance().read(
 		connection.socket,
-		&readBuf,
-		readLen);
+		request);
 	
 	if (readResult > 0)
 	{
 		for (const auto& eventHandlerF : m_newMsgEventHandlers)
 		{
-			throw;
-			eventHandlerF(*this, connection, readBuf, readLen);
+			eventHandlerF(connection, request);
 		}
 	}
 	else if (readResult == 0)
@@ -224,7 +221,7 @@ void Server::parseClientActivity(const Connection& connection)
 			throw SocketExceptionStr(STR("close: " + std::strerror(errno)));
 
 		for (const auto& eventHandlerF : m_clientDisconnectedEventHandlers)
-			eventHandlerF(*this, connection);
+			eventHandlerF(connection);
 		
 		m_connections.erase(
 			std::find_if(

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Connection.h"
+#include "Requests/Request.h"
 #include <string>
 #include <vector>
 #include <functional>
@@ -11,9 +12,9 @@ namespace SocketConnection
 	{
 	public:
 		// Event handlers' types.
-		typedef std::function<void (Server&, const Connection&)> ClientConnectedEvent;
-		typedef std::function<void (Server&, const Connection&)> ClientDisconnectedEvent;
-		typedef std::function<void (Server&, const Connection&, const unsigned char*, size_t)> ClientMsgEvent;
+		typedef std::function<void (const Connection&)> ClientConnectedEvent;
+		typedef std::function<void (const Connection&)> ClientDisconnectedEvent;
+		typedef std::function<void (const Connection&, const Requests::Request&)> ClientMsgEvent;
 	
 		// Constructors.
 		Server(size_t maxNbOfClients = 4, size_t maxPendingConnections = 5);

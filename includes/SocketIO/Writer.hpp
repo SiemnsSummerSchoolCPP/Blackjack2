@@ -13,9 +13,13 @@ namespace SocketIO
 		int write(
 			int socket,
 			const void* data,
-			Requests::RequestLenType dataLen);
+			Requests::RequestLen dataLen);
 		
 		int write(int socket, const Requests::Request& request);
+		int broadcast(
+			const std::vector<int>& sockets,
+			const Requests::Request& request,
+			bool ignoreFailures = true);
 		
 	private:
 		static Writer instance;
