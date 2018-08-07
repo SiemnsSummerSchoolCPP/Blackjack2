@@ -3,7 +3,7 @@
 #include "SocketConnection/Connection.h"
 #include "Requests/Request.h"
 
-namespace BlackjackClient
+namespace BlackjackClient { namespace Controllers
 {
 	class MsgReadController
 	{
@@ -19,4 +19,4 @@ namespace BlackjackClient
 		
 	private:
 	};
-}
+}}

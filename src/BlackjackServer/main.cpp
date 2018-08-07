@@ -48,31 +48,12 @@ static NetworkTools::NetworkHost buildNetworkHost(
 	}
 }
 
-int main(const int argc, const char* const* const argv)
+void continouslyParseClientsInput(NetworkTools::NetworkHost& networkHost)
 {
-	if (argc == 1)
-	{
-		std::cerr << "No port provided" << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	auto requestMapper = NetworkTools::RequestMapper();
-	
-	const int port = atoi(argv[1]);
-	auto networkHost = buildNetworkHost(port, requestMapper);
-	
-	auto lobbyController = LobbyController(networkHost);
-	addLobbyControllerActions(lobbyController, requestMapper);
-	
-	Requests::Request request(
-		BlackjackClient::MsgReadController::RequestHeaders::kReceiveMsg,
-		"Server hello");
-	
 	while (true)
 	{
 		try
 		{
-			networkHost.broadcastRequest(request);
 			networkHost.parseAnyIncomingActivities();
 		}
 		catch (SocketConnection::Exceptions::SocketException& e)
@@ -84,5 +65,30 @@ int main(const int argc, const char* const* const argv)
 			std::cerr << e.what() << std::endl;
 		}
 	}
+}
+
+int main(const int argc, const char* const* const argv)
+{
+	if (argc == 1)
+	{
+		std::cerr << "No port provided" << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	// Network arguments.
+	const int port = atoi(argv[1]);
+	
+	auto requestMapper = NetworkTools::RequestMapper();
+	auto networkHost = buildNetworkHost(port, requestMapper);
+	
+	// Declare controllers.
+	auto lobbyController = LobbyController(networkHost);
+	
+	// Map controller's actions.
+	addLobbyControllerActions(lobbyController, requestMapper);
+
+	// Start.
+	continouslyParseClientsInput(networkHost);
+
 	return 0;
 }

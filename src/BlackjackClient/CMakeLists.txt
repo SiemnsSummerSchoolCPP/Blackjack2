@@ -15,9 +15,14 @@ file(GLOB models
 	"./Models/*.cpp"
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/Models/*.hpp")
 
+file(GLOB userInputControllers
+	"./UserInputControllers/*.cpp"
+	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/UserInputControllers/*.hpp")
+
 source_group("Models" FILES ${models})
 source_group("Views" FILES ${views})
 source_group("Controllers" FILES ${controllers})
+source_group("UserInputControllers" FILES ${userInputControllers})
 
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.h"
@@ -31,6 +36,8 @@ add_executable(${PROJECT_NAME}
 	${models}
 	${views}
 	${controllers}
+
+	${userInputControllers}
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -41,6 +48,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	NetworkTools
 	Requests
 	SocketConnection
+	KeyboardInputTools
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

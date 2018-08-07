@@ -3,6 +3,7 @@
 #include <iostream>
 
 using namespace BlackjackServer;
+using namespace BlackjackClient::Controllers;
 
 LobbyController::LobbyController(const NetworkTools::NetworkHost& networkHost) :
 	m_networkHost(networkHost)
@@ -16,8 +17,7 @@ int LobbyController::sendMsg(
 	Requests::Request resultRequest(request);
 	
 	resultRequest.header =
-		BlackjackClient::MsgReadController::RequestHeaders::kReceiveMsg;
+		MsgReadController::RequestHeaders::kReceiveMsg;
 	m_networkHost.broadcastRequest(resultRequest);
-	
 	return 0;
 }

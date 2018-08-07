@@ -1,7 +1,7 @@
 #include "Controllers/MsgReadController.hpp"
 #include <iostream>
 
-using namespace BlackjackClient;
+using namespace BlackjackClient::Controllers;
 
 int MsgReadController::receiveMsg(
 	const SocketConnection::Connection& connection,

@@ -83,10 +83,7 @@ int Client::waitForAnActivity(time_t seconds, suseconds_t micros)
 
 	if (nbOfReadySockets == -1)
 	{
-		if (errno == EBADF)
-			throw SocketExceptionStr(STR("Disconnected."));
-		else
-			throw SocketExceptionStr(STR("select: " + std::strerror(errno)));
+		throw SocketExceptionStr(STR("select: " + std::strerror(errno)));
 	}
 
 	return nbOfReadySockets;

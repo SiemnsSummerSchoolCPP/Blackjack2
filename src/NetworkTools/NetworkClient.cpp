@@ -29,7 +29,7 @@ NetworkClient::NetworkClient(const NetworkClientModel& model) :
 		});
 }
 
-int NetworkClient::sendRequest(const Requests::Request& request)
+int NetworkClient::sendRequest(const Requests::Request& request) const
 {
 	return SocketIO::Writer::getWriter().write(
 		m_client.getConnection().socket,

@@ -10,7 +10,7 @@ namespace NetworkTools
 	{
 	public:
 		NetworkClient(const NetworkClientModel& model);
-		int sendRequest(const Requests::Request& request);
+		int sendRequest(const Requests::Request& request) const;
 		void parseAnyIncomingActivities();
 		
 	private:

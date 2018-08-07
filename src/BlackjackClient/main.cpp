@@ -3,8 +3,10 @@
 #include "NetworkTools/NetworkClient.hpp"
 #include "NetworkTools/NetworkClientModel.h"
 #include "Controllers/MsgReadController.hpp"
-#include "BlackjackServer/Controllers/LobbyController.hpp"
+#include "UserInputControllers/LobbyController.hpp"
+#include "KeyboardInputTools/KeyboardCmdManager.hpp"
 #include <iostream>
+#include <thread>
 
 using namespace BlackjackClient;
 using namespace Requests;
@@ -18,6 +20,8 @@ using namespace Requests;
 		{																	\
 			return function(connection, *request);							\
 		});																	\
+
+
 
 static NetworkTools::NetworkClient buildNetworkClient(
 	const char* const ip,
@@ -42,31 +46,38 @@ static NetworkTools::NetworkClient buildNetworkClient(
 	}
 }
 
-int main(const int argc, const char* const* const argv)
+static void addMsgReaderControllerActions(
+	const Controllers::MsgReadController& ctrl,
+	NetworkTools::RequestMapper& mapper)
 {
-	if (argc < 3)
-	{
-		std::cerr << "No ip or/and port provided." << std::endl;
-		exit(EXIT_FAILURE);
-	}
-
-	const auto ip = argv[1];
-	const auto port = atoi(argv[2]);
-	
-	auto requestMapper = NetworkTools::RequestMapper();
-	auto networkClient = buildNetworkClient(ip, port, requestMapper);
-	
-	auto msgReaderController = MsgReadController();
 	ADD_CONTROLLER_ACTION(
-		requestMapper,
-		MsgReadController::RequestHeaders::kReceiveMsg,
-		msgReaderController.receiveMsg);
-	
-	Requests::Request request(
-		BlackjackServer::LobbyController::RequestHeaders::kSendMsg,
-		"hello");
-	networkClient.sendRequest(request);
-	
+		mapper,
+		Controllers::MsgReadController::RequestHeaders::kReceiveMsg,
+		ctrl.receiveMsg);
+}
+
+static void addUserInLobbyControllerActions(
+	const UserInputControllers::LobbyController& ctrl,
+	KeyboardInputTools::KeyboardCmdManager& cmdManager)
+{
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.sendMsg(input);
+	});
+}
+
+void continuouslyParseUserInput(
+	const KeyboardInputTools::KeyboardCmdManager& cmdManager)
+{
+	while (true)
+	{
+		cmdManager.parseCmd(
+			KeyboardInputTools::KeyboardCmdManager::readKeyboardInput());
+	}
+}
+
+void continuouslyParseNetworkInput(NetworkTools::NetworkClient& networkClient)
+{
 	while (true)
 	{
 		try
@@ -75,9 +86,49 @@ int main(const int argc, const char* const* const argv)
 		}
 		catch (const SocketConnection::Exceptions::SocketException& e)
 		{
-			std::cerr << e.what() << std::endl;
+			if (errno == EBADF)
+				std::cerr << "Disconnected." << std::endl;
+			else
+				std::cerr << e.what() << std::endl;
 			exit(EXIT_FAILURE);
 		}
+	}
+}
+
+int main(const int argc, const char* const* const argv)
+{
+	if (argc < 3)
+	{
+		std::cerr << "No ip or/and port provided." << std::endl;
+		exit(EXIT_FAILURE);
+	}
+
+	// Network arguments.
+	const auto ip = argv[1];
+	const auto port = atoi(argv[2]);
+	
+	auto requestMapper = NetworkTools::RequestMapper();
+	auto cmdManager = KeyboardInputTools::KeyboardCmdManager();
+	auto networkClient = buildNetworkClient(ip, port, requestMapper);
+	
+	// Declare controllers.
+	auto msgReaderController = Controllers::MsgReadController();
+	const auto userInputLobbyController =
+		UserInputControllers::LobbyController(networkClient);
+	
+	// Map controller's actions.
+	addMsgReaderControllerActions(msgReaderController, requestMapper);
+	addUserInLobbyControllerActions(userInputLobbyController, cmdManager);
+	
+	// Start.
+	{
+		auto networkWatcher = std::thread([&]()
+		{
+			continuouslyParseNetworkInput(networkClient);
+		});
+		continuouslyParseUserInput(cmdManager);
+		
+		networkWatcher.join();
 	}
 	return 0;
 }
