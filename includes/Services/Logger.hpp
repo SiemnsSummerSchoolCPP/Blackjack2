@@ -11,6 +11,7 @@ namespace Services
 	public:
 		Logger();
 	
+		void logAction(std::string msg) const;
 		void logAction(
 			const SocketConnection::Connection& connection,
 			std::string msg) const;

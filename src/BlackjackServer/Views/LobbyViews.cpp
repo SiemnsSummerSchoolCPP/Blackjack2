@@ -65,3 +65,43 @@ std::string LobbyViews::invalidName_ServerView(
 		<< model.errorMsg;
 	return ss.str();
 }
+
+/*
+** Set ready.
+*/
+
+std::string LobbyViews::alreadyReady_WhisperView() const
+{
+	return "You are already set to ready.";
+}
+
+std::string LobbyViews::waitingForOthers_View(
+	const std::vector<std::string>& names) const
+{
+	auto ss = std::stringstream();
+	
+	ss << "Waiting for: " << std::endl;
+	for (const auto& name : names)
+	{
+		ss << "- " << name << std::endl;
+	}
+	return ss.str();
+}
+
+std::string LobbyViews::alreadyReady_ServerView(
+	const std::string name) const
+{
+	auto ss = std::stringstream();
+	
+	ss << "[Repeated Ready Set]" << name << " tried to set ready again.";
+	return ss.str();
+}
+
+std::string LobbyViews::successSetReady_View(std::string name) const
+{
+	auto ss = std::stringstream();
+	
+	ss << name << " is now ready.";
+	return ss.str();
+}
+

@@ -12,6 +12,7 @@ namespace BlackjackClient { namespace UserInputControllers
 	
 		bool sendMsg(std::string userInput) const;
 		bool changeName(std::string userInput) const;
+		bool setReady(std::string userInput) const;
 	
 	private:
 		const NetworkTools::NetworkClient& m_networkClient;

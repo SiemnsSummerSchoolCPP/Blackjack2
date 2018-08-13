@@ -9,6 +9,6 @@ namespace DataLayer
 	struct PlayerModel
 	{
 		UserModel* userModel;
-		std::vector<PlayerHand> hands;
+		std::vector<PlayerHand*> hands;
 	};
 }

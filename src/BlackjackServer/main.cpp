@@ -1,10 +1,17 @@
 #include "NetworkTools/RequestMapper.hpp"
 #include "NetworkTools/NetworkHost.hpp"
 #include "NetworkTools/NetworkHostModel.h"
-#include "Controllers/LobbyController.hpp"
 #include "SocketConnection/Exceptions.h"
-#include "Services/Logger.hpp"
 #include "DataLayer/BjDatabase.hpp"
+
+#include "Services/Logger.hpp"
+#include "Services/SendHelper.hpp"
+#include "Services/PrintHelper.hpp"
+
+#include "BlackjackClient/Controllers/MsgReadController.hpp"
+#include "Controllers/LobbyController.hpp"
+#include "Controllers/GameSessionController.hpp"
+
 #include <iostream>
 
 using namespace BlackjackServer;
@@ -19,6 +26,13 @@ using namespace Requests;
 		{																	\
 			return function(connection, *request);							\
 		});																	\
+
+static const RequestHeader kReceiveMsgHeader =
+	BlackjackClient
+		::Controllers
+		::MsgReadController
+		::RequestHeaders
+		::kReceiveMsg;
 
 static void addLobbyControllerActions(
 	Controllers::LobbyController& ctrl,
@@ -41,6 +55,28 @@ static void addLobbyControllerActions(
 		mapper,
 		Controllers::LobbyController::RequestHeaders::kSetName,
 		ctrl.changeName);
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::LobbyController::RequestHeaders::kSetReady,
+		ctrl.setReady);
+}
+
+static void addGmSessionControllerActions(
+	Controllers::GameSessionController& ctrl,
+	NetworkTools::RequestMapper& mapper)
+{
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::GameSessionController::RequestHeaders::kPlaceBet,
+		ctrl.betRequest);
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::GameSessionController::RequestHeaders::kHit,
+		ctrl.hitRequest);
+	ADD_CONTROLLER_ACTION(
+		mapper,
+		Controllers::GameSessionController::RequestHeaders::kStand,
+		ctrl.standRequest);
 }
 
 static NetworkTools::NetworkHost buildNetworkHost(
@@ -96,21 +132,51 @@ int main(const int argc, const char* const* const argv)
 	auto networkHost = buildNetworkHost(port, requestMapper);
 	
 	// Declare stuff.
-	auto lobbyViews = Views::LobbyViews();
 	auto dbContext = DataLayer::BjDatabase();
+	
+	// Declare blackjack logic.
+	auto pointsTools = BlackjackLogic::PointsTools();
+	auto playerHandLogic = BlackjackLogic::PlayerHandLogic();
+	auto playerLogic = BlackjackLogic::PlayerLogic(
+		playerHandLogic,
+		pointsTools);
+	auto gmStatusLogic = BlackjackLogic::GameStatusLogic(
+		dbContext,
+		playerLogic);
+	auto dealerLogic = BlackjackLogic::DealerLogic(&dbContext);
 	
 	// Services.
 	auto logger = Services::Logger();
-	
+	auto userManager = Services::UserManager(dbContext);
+	auto sendHelper = Services::SendHelper(networkHost, kReceiveMsgHeader);
+	auto printHelper = Services::PrintHelper(pointsTools, 2, "§");
+
+	// Views.
+	auto lobbyViews = Views::LobbyViews();
+	auto gmSessionViews = Views::GameSessionViews(&printHelper);
+
 	// Declare controllers.
+	auto gmSessionController = Controllers::GameSessionController(
+		gmSessionViews,
+		logger,
+		sendHelper,
+		userManager,
+		dbContext,
+		gmStatusLogic,
+		playerLogic,
+		dealerLogic);
+	
 	auto lobbyController = Controllers::LobbyController(
-		networkHost,
 		lobbyViews,
 		logger,
-		dbContext);
+		sendHelper,
+		userManager,
+		dbContext,
+		&gmSessionController);
 	
 	// Map controller's actions.
 	addLobbyControllerActions(lobbyController, requestMapper);
+	addGmSessionControllerActions(gmSessionController, requestMapper);
 
 	// Start.
 	continouslyParseNetworkInput(networkHost);

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(PlayingCards)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/PlayingCards/*.hpp"

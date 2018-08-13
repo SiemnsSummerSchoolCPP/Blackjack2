@@ -9,6 +9,14 @@ Logger::Logger() :
 {
 }
 
+void Logger::logAction(std::string msg) const
+{
+	printTime();
+	*m_outStream
+		<< msg
+		<< std::endl;
+}
+
 void Logger::logAction(
 	const SocketConnection::Connection& connection,
 	std::string msg) const

@@ -2,6 +2,7 @@
 
 #include "SocketConnection/Connection.h"
 #include <string>
+#include <vector>
 
 namespace BlackjackServer { namespace Models { namespace LobbyModels
 {

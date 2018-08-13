@@ -19,7 +19,7 @@ namespace PlayingCards
 			std::ostream& o,
 			const Card& target
 		);
-		
+	
 	private:
 		const Card::Suit m_suit;
 		const Card::Rank m_rank;
@@ -64,3 +64,15 @@ public:
 	static PlayingCards::Card::Rank min();
 	static PlayingCards::Card::Rank max();
 };
+
+namespace std
+{
+	template <>
+	struct hash<PlayingCards::Card::Rank>
+	{
+		std::size_t operator()(const PlayingCards::Card::Rank& k) const
+		{
+			return hash<int>()(static_cast<int>(k));
+		}
+	};
+}

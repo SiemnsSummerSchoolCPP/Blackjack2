@@ -9,28 +9,26 @@ BjDatabase::BjDatabase()
 {
 }
 
-std::vector<UserModel*>& BjDatabase::getUsers()
+std::unordered_map<int, UserModel*>& BjDatabase::getUsers()
 {
 	return m_users;
 }
 
-std::vector<PlayerModel*>& BjDatabase::getPlayers()
+std::unordered_map<int, PlayerModel*>& BjDatabase::getPlayers()
 {
 	return m_players;
 }
 
+GameSession& BjDatabase::getGameSession()
+{
+	return m_gameSession;
+}
+
 UserModel* BjDatabase::getUser(const SocketConnection::Connection& connection)
 {
-	auto findResult = std::find_if(
-		m_users.begin(),
-		m_users.end(),
-		[&](const UserModel* user)
-		{
-			return user->uniqueId == connection.socket;
-		});
-	
-	if (findResult == m_users.end())
+	if (m_users.find(connection.socket) == m_users.end())
 		throw "No such connection in database.";
 	
-	return *findResult;
+	return m_users[connection.socket];
 }
+

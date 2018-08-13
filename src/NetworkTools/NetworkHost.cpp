@@ -40,13 +40,7 @@ int NetworkHost::broadcastRequest(
 	const Requests::Request& request,
 	const SocketConnection::Connection* exceptConnection) const
 {
-	std::vector<int> sockets;
-	
-	const auto totalNbOfEndConnections =
-		m_server.getMaxNbOfClients() -
-		((exceptConnection == nullptr) ? 0 : 1);
-	sockets.reserve(totalNbOfEndConnections);
-	
+	std::vector<int> sockets;	
 	for (const auto& connection : m_server.getConnections())
 	{
 		if (exceptConnection != nullptr &&

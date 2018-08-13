@@ -10,7 +10,7 @@ LobbyController::LobbyController(
 {
 }
 
-bool LobbyController::sendMsg(std::string userInput) const
+bool LobbyController::sendMsg(const std::string userInput) const
 {
 	static const auto regexPattern = std::regex(
 		"^send msg: (.*)$");
@@ -40,7 +40,7 @@ bool LobbyController::sendMsg(std::string userInput) const
 	return true;
 }
 
-bool LobbyController::changeName(std::string userInput) const
+bool LobbyController::changeName(const std::string userInput) const
 {
 	static const auto regexPattern = std::regex(
 		"^set name to (.*)$");
@@ -60,5 +60,28 @@ bool LobbyController::changeName(std::string userInput) const
 		regexSearchBuf[1].str()
 	));
 	
+	return true;
+}
+
+bool LobbyController::setReady(const std::string userInput) const
+{
+	static const auto regexPattern = std::regex(
+		"^(ready|set ready)$");
+
+	std::smatch regexSearchBuf;
+	
+	const auto itMatches = std::regex_search(
+		userInput,
+		regexSearchBuf,
+		regexPattern);
+	
+	if (!itMatches)
+		return false;
+	
+	const auto header =
+		BlackjackServer::Controllers
+			::LobbyController
+			::RequestHeaders::kSetReady;
+	m_networkClient.sendRequest(Requests::Request(header, "dummy str"));
 	return true;
 }

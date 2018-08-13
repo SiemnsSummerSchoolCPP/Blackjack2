@@ -1,0 +1,67 @@
+#pragma once
+
+#include "BlackjackServer/Views/GameSessionViews.hpp"
+#include "Services/Logger.hpp"
+#include "Services/SendHelper.hpp"
+#include "Services/UserManager.hpp"
+#include "BlackjackLogic/GameStatusLogic.hpp"
+#include "BlackjackLogic/PlayerLogic.hpp"
+#include "BlackjackLogic/DealerLogic.hpp"
+#include "DataLayer/UserModel.h"
+
+namespace BlackjackServer { namespace Controllers
+{
+	class GameSessionController
+	{
+	public:
+		enum RequestHeaders : Requests::RequestHeader
+		{
+			kPlaceBet	= 200 + 0,
+			kHit		= 200 + 1,
+			kStand		= 200 + 2
+		};
+		
+		GameSessionController(
+			const Views::GameSessionViews& views,
+			const Services::Logger& logger,
+			const Services::SendHelper& sendHelper,
+			const Services::UserManager& userManager,
+			DataLayer::BjDatabase& dbContext,
+			
+			BlackjackLogic::GameStatusLogic& gmStatusLogic,
+			BlackjackLogic::PlayerLogic& playerLogic,
+			BlackjackLogic::DealerLogic& dealerLogic
+		);
+	
+		void startGame(const std::vector<DataLayer::UserModel*>& users) const;
+		void startHitStandPhase() const;
+		void endGame() const;
+		void leaveGame(
+			const SocketConnection::Connection& connection,
+			const DataLayer::PlayerModel& player);
+		
+		int betRequest(
+			const SocketConnection::Connection& connection,
+			const Requests::Request& request) const;
+		int hitRequest(
+			const SocketConnection::Connection& connection,
+			const Requests::Request& request) const;
+		int standRequest(
+			const SocketConnection::Connection& connection,
+			const Requests::Request& request) const;
+	
+	private:
+		const Views::GameSessionViews& m_views;
+		const Services::Logger& m_logger;
+		const Services::SendHelper& m_sendHelper;
+		const Services::UserManager& m_userManager;
+		DataLayer::BjDatabase& m_dbContext;
+		
+		BlackjackLogic::GameStatusLogic& m_gmStatusLogic;
+		BlackjackLogic::PlayerLogic& m_playerLogic;
+		BlackjackLogic::DealerLogic& m_dealerLogic;
+		
+		void createThePlayers(
+			const std::vector<DataLayer::UserModel*>& users) const;
+	};
+}}

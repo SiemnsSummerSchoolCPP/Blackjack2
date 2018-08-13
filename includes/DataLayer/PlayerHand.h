@@ -2,15 +2,16 @@
 
 #include "Hand.h"
 #include "Bet.h"
+#include <ostream>
 
 namespace DataLayer
 {
 	struct PlayerHand : public Hand
 	{
-		enum class State
+		enum State
 		{
-			kSitting,
-			kStanding
+			kSitting	= 1 << 1,
+			kStanding	= 1 << 2
 		};
 		
 		Bet bet;

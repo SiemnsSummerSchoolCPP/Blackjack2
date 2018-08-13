@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0.0 FATAL_ERROR)
 project(BlackjackServer)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 14)
 
 file(GLOB srcs "*.cpp" "*.h" "*.hpp")
 
@@ -33,16 +33,17 @@ add_executable(${PROJECT_NAME}
 	${controllers}
 )
 
-target_include_directories(${PROJECT_NAME} PRIVATE
-	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/
-	${CMAKE_SOURCE_DIR}/includes/)
+target_include_directories(${PROJECT_NAME} PUBLIC
+	${CMAKE_SOURCE_DIR}/includes/
+	${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} PUBLIC
 	NetworkTools
 	Services
 	Requests
 	SocketConnection
 	DataLayer
+	BlackjackLogic
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES

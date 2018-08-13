@@ -38,7 +38,7 @@ int Writer::write(const int socket, const Requests::Request& request)
 	const auto requiredBufLen =
 		request.dataLen +
 		sizeof(request.dataLen) +
-		sizeof(request.header);
+		sizeof(request.header) + 1;
 	
 	if (m_buf.size() < requiredBufLen)
 	{

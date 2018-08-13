@@ -9,21 +9,21 @@ namespace PlayingCards
 	class Deck
 	{
 	public:
+		static const int nbOfCards = 52;
 		struct NotEnoughCards;
 	
 		Deck();
 		~Deck();
-		
+
+		static Card** freshDeck();
+
+		bool isEmpty() const;
 		void shuffle();
 		Card& dealCard();
 
 	private:
-		static const int nbOfCards = 52;
-		
 		Card** m_cards = nullptr;
-		int m_cardIndex;
-		
-		static Card** freshDeck();
+		int m_cardIndex = 0;
 	};
 	
 	struct Deck::NotEnoughCards : public std::exception

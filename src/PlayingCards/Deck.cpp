@@ -36,6 +36,11 @@ Deck::~Deck()
 ** Public methods
 */
 
+bool Deck::isEmpty() const
+{
+	return m_cardIndex >= Deck::nbOfCards;
+}
+
 void Deck::shuffle()
 {
 	std::random_device randomDevice;

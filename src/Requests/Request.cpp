@@ -1,5 +1,6 @@
 #include "Request.h"
 #include <string>
+#include <iostream>
 
 using namespace Requests;
 
@@ -29,5 +30,9 @@ Request::Request(const RequestHeader header, const std::string& str) :
 	dataLen(str.length()),
 	data(reinterpret_cast<const unsigned char*>(str.c_str()))
 {
+}
 
+std::string Request::str() const
+{
+	return std::string(reinterpret_cast<const char*>(data));
 }

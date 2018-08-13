@@ -21,5 +21,7 @@ namespace Requests
 			RequestHeader header,
 			RequestLen requestLen,
 			const unsigned char* data);
+		
+		std::string str() const;
 	};
 }

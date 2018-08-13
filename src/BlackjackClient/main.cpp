@@ -4,6 +4,7 @@
 #include "NetworkTools/NetworkClientModel.h"
 #include "Controllers/MsgReadController.hpp"
 #include "UserInputControllers/LobbyController.hpp"
+#include "UserInputControllers/GameController.hpp"
 #include "KeyboardInputTools/KeyboardCmdManager.hpp"
 #include <iostream>
 #include <thread>
@@ -69,6 +70,31 @@ static void addUserInLobbyControllerActions(
 	{
 		return ctrl.changeName(input);
 	});
+	
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.setReady(input);
+	});
+}
+
+static void addUserInGameControllerActions(
+	const UserInputControllers::GameController& ctrl,
+	KeyboardInputTools::KeyboardCmdManager& cmdManager)
+{
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.placeABet(input);
+	});
+	
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.hit(input);
+	});
+	
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.stand(input);
+	});
 }
 
 void continuouslyParseUserInput(
@@ -120,10 +146,13 @@ int main(const int argc, const char* const* const argv)
 	auto msgReaderController = Controllers::MsgReadController();
 	const auto userInputLobbyController =
 		UserInputControllers::LobbyController(networkClient);
+	const auto userInGameCtrl =
+		UserInputControllers::GameController(&networkClient);
 	
 	// Map controller's actions.
 	addMsgReaderControllerActions(msgReaderController, requestMapper);
 	addUserInLobbyControllerActions(userInputLobbyController, cmdManager);
+	addUserInGameControllerActions(userInGameCtrl, cmdManager);
 	
 	// Start.
 	{
