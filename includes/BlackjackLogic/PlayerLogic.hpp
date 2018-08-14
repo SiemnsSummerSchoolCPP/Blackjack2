@@ -4,6 +4,7 @@
 #include "PointsTools.hpp"
 #include "DataLayer/PlayerModel.h"
 #include "DataLayer/BjDatabase.hpp"
+#include "DataLayer/CashResult.h"
 
 namespace BlackjackLogic
 {
@@ -36,6 +37,10 @@ namespace BlackjackLogic
 		void executeStand(
 			DataLayer::PlayerModel& player,
 			int handIndex) const;
+		
+		DataLayer::CashResult cash(
+			const DataLayer::PlayerHand&,
+			int dealersPoints) const;
 		
 	private:
 		const PlayerHandLogic& m_handLogic;

@@ -140,10 +140,10 @@ int main(const int argc, const char* const* const argv)
 	auto playerLogic = BlackjackLogic::PlayerLogic(
 		playerHandLogic,
 		pointsTools);
+	auto dealerLogic = BlackjackLogic::DealerLogic(pointsTools, &dbContext);
 	auto gmStatusLogic = BlackjackLogic::GameStatusLogic(
 		dbContext,
 		playerLogic);
-	auto dealerLogic = BlackjackLogic::DealerLogic(&dbContext);
 	
 	// Services.
 	auto logger = Services::Logger();
@@ -152,7 +152,7 @@ int main(const int argc, const char* const* const argv)
 	auto printHelper = Services::PrintHelper(pointsTools, 2, "§");
 
 	// Views.
-	auto lobbyViews = Views::LobbyViews();
+	auto lobbyViews = Views::LobbyViews(printHelper);
 	auto gmSessionViews = Views::GameSessionViews(&printHelper);
 
 	// Declare controllers.

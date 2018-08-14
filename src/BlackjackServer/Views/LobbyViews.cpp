@@ -4,6 +4,12 @@
 using namespace BlackjackServer;
 using namespace BlackjackServer::Views;
 
+LobbyViews::LobbyViews(
+	const Services::PrintHelper& printHelper) :
+	m_printHelper(printHelper)
+{
+}
+
 std::string LobbyViews::clientJoin_View(
 	const Models::LobbyModels::ClientJoinModel& model) const
 {
@@ -20,6 +26,11 @@ std::string LobbyViews::clientClientLeave_View(
 	
 	ss << "User " << model.name << " has left.";
 	return ss.str();
+}
+
+std::string LobbyViews::allPlayersLeft_View() const
+{
+	return "All players have left the game.";
 }
 
 std::string LobbyViews::sendMsg_View(
@@ -69,6 +80,30 @@ std::string LobbyViews::invalidName_ServerView(
 /*
 ** Set ready.
 */
+
+std::string LobbyViews::anotherGameIsBeingPlayed_View() const
+{
+	return "Another game is being played at the moment.";
+}
+
+std::string LobbyViews::setReadyAnotherGameIsBeingPlayed_ServerView() const
+{
+	std::stringstream ss;
+	
+	ss << "Failed to set ready: " << anotherGameIsBeingPlayed_View();
+	return ss.str();
+}
+
+std::string LobbyViews::userIsUnableToPlay_View(
+	const DataLayer::UserModel& user) const
+{
+	std::stringstream ss;
+	
+	ss	<< "You are unable to join. Current balance: "
+		<< m_printHelper.formatMoney(user.money)
+		<< ".";
+	return ss.str();
+}
 
 std::string LobbyViews::alreadyReady_WhisperView() const
 {

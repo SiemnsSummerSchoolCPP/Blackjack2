@@ -15,6 +15,7 @@ namespace Services
 			const std::string& moneySign = "$");
 
 		std::string formatMoney(const double& money) const;
+		std::string formatHand(const DataLayer::Hand& hand) const;
 		std::string formatPlayerHand(const DataLayer::PlayerHand& hand) const;
 		std::string formatHands(
 			const std::vector<DataLayer::PlayerHand*>&) const;

@@ -35,6 +35,8 @@ namespace BlackjackServer { namespace Controllers
 	
 		void startGame(const std::vector<DataLayer::UserModel*>& users) const;
 		void startHitStandPhase() const;
+		void startCashing() const;
+		
 		void endGame() const;
 		void leaveGame(
 			const SocketConnection::Connection& connection,

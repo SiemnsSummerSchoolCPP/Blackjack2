@@ -1,6 +1,7 @@
 #pragma once
 
 #include "PlayerLogic.hpp"
+#include "DealerLogic.hpp"
 #include "DataLayer/BjDatabase.hpp"
 #include "DataLayer/GameSession.h"
 
@@ -15,10 +16,6 @@ namespace BlackjackLogic
 	
 		bool allPlayersHavePlacedTheirBets() const;
 		bool allHandsAreStanding() const;
-		
-		void setBettingPhase();
-		void setHitStandPhase();
-		void setCashingPhase();
 		
 	private:
 		DataLayer::BjDatabase& m_dbContext;

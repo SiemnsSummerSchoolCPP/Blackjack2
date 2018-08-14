@@ -101,3 +101,54 @@ void PlayerLogic::executeStand(
 	
 	hand.state = DataLayer::PlayerHand::State::kStanding;
 }
+
+static void setCashResultMoney(
+	DataLayer::CashResult& cashResult,
+	const double multiplier)
+{
+	cashResult.winMultipiler = multiplier;
+	cashResult.income = cashResult.bet->amount * cashResult.winMultipiler;
+	cashResult.receivedMoney = cashResult.bet->amount + cashResult.income;
+}
+
+DataLayer::CashResult PlayerLogic::cash(
+	const DataLayer::PlayerHand& hand,
+	const int dealersPoints) const
+{
+	DataLayer::CashResult cashResult;
+	
+	const auto handPoints = m_pointsTools.getHandPoints(hand);
+	
+	cashResult.bet = &hand.bet;
+	if (m_pointsTools.isBusted(handPoints))
+	{
+		cashResult.state = DataLayer::CashResult::State::kLost;
+		setCashResultMoney(cashResult, -1);
+	}
+	else if (m_pointsTools.isBlackjack(hand))
+	{
+		cashResult.state = DataLayer::CashResult::State::kBlackjack;
+		setCashResultMoney(cashResult, m_pointsTools.blackjackWinMultiplier);
+	}
+	else if (
+		m_pointsTools.isBusted(dealersPoints) ||
+		handPoints > dealersPoints)
+	{
+		cashResult.state = DataLayer::CashResult::State::kWin;
+		setCashResultMoney(cashResult, m_pointsTools.simplekWinMultiplier);
+	}
+	else if (handPoints < dealersPoints)
+	{
+		cashResult.state = DataLayer::CashResult::State::kLost;
+		setCashResultMoney(cashResult, -1);
+	}
+	else if (handPoints == dealersPoints)
+	{
+		cashResult.state = DataLayer::CashResult::State::kDraw;
+		setCashResultMoney(cashResult, 0);
+	}
+	else
+		throw;
+	
+	return cashResult;
+}

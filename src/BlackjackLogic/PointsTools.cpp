@@ -44,7 +44,7 @@ int PointsTools::getHandPoints(
 	// Smart ace.
 	for (const auto& card : hand.cards)
 	{
-		if (isBusted(result))
+		if (!isBusted(result))
 			break;
 		if (card->getRank() == PlayingCards::Card::Rank::kAce)
 		{

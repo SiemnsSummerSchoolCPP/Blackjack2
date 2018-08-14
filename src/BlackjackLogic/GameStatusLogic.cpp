@@ -1,6 +1,7 @@
 #include "GameStatusLogic.hpp"
 
 using namespace BlackjackLogic;
+using namespace DataLayer;
 
 GameStatusLogic::GameStatusLogic(
 	DataLayer::BjDatabase& dbContext,
@@ -32,12 +33,3 @@ bool GameStatusLogic::allHandsAreStanding() const
 			return !m_playerLogic.allHandsAreStanding(player);
 		});
 }
-
-void GameStatusLogic::setBettingPhase()
-{
-	m_dbContext.getGameSession().state =
-		DataLayer::GameSession::State::kBettingPhase;
-}
-
-//void setHitStandPhase();
-//void setCashingPhase();

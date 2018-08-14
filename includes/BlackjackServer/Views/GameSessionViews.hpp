@@ -3,6 +3,7 @@
 #include "BlackjackServer/Models/GameSessionModels.h"
 #include "Services/PrintHelper.hpp"
 #include "DataLayer/Bet.h"
+#include "DataLayer/CashResult.h"
 #include <string>
 
 namespace BlackjackServer { namespace Views
@@ -20,7 +21,19 @@ namespace BlackjackServer { namespace Views
 		std::string initialHandsSetup_View(
 			const Models::GmSessionModels::InitialHandsSetupModel&) const;
 		
-		std::string allLeftResetingTheGame_View() const;
+		std::string startCashing_View() const;
+		std::string dealersFinalCards_View(
+			const DataLayer::Hand& dealersHand,
+			int nbOfCardsDealt) const;
+		std::string handCashResult_View(
+			const DataLayer::PlayerHand&,
+			const DataLayer::CashResult&) const;
+		std::string handCashResult_ServerView(
+			const DataLayer::PlayerModel&,
+			const DataLayer::PlayerHand&,
+			const DataLayer::CashResult&) const;
+		
+		std::string resetingTheGame_View() const;
 		
 		std::string noGames_View() const;
 		std::string notBettingPhase_View() const;
@@ -33,7 +46,7 @@ namespace BlackjackServer { namespace Views
 		std::string alreadyPlacedABet_View(const DataLayer::Bet& bet) const;
 		
 		std::string notHitStandPhase() const;
-		std::string successfullHit(
+		std::string successfullHit_View(
 			const Models::GmSessionModels::SuccessfulHitModel&) const;
 		std::string successfullStand(
 			const Models::GmSessionModels::SuccessfulStandModel&) const;

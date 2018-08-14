@@ -23,14 +23,11 @@ std::string PrintHelper::formatMoney(const double& money) const
 	return ss.str();
 }
 
-std::string PrintHelper::formatPlayerHand(
-	const DataLayer::PlayerHand& hand) const
+std::string PrintHelper::formatHand(const DataLayer::Hand& hand) const
 {
 	std::stringstream ss;
 	
-	ss	<< "[ " << formatMoney(hand.bet.amount) << ": "
-		<< static_cast<DataLayer::Hand>(hand)
-		<< "(";
+	ss << hand << "(";
 	
 	const auto handPoints = m_pointsTools.getHandPoints(hand);
 	if (m_pointsTools.isBlackjack(hand))
@@ -41,8 +38,17 @@ std::string PrintHelper::formatPlayerHand(
 			ss << "BUSTED: ";
 		ss << handPoints << "p";
 	}
+	ss << ")";
+	return ss.str();
+}
+
+std::string PrintHelper::formatPlayerHand(
+	const DataLayer::PlayerHand& hand) const
+{
+	std::stringstream ss;
 	
-	ss	<< ")"
+	ss	<< "[ " << formatMoney(hand.bet.amount) << ": "
+		<< formatHand(hand)
 		<< "]";
 	return ss.str();
 }

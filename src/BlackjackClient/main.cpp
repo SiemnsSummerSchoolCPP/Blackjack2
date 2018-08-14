@@ -102,8 +102,14 @@ void continuouslyParseUserInput(
 {
 	while (true)
 	{
-		cmdManager.parseCmd(
-			KeyboardInputTools::KeyboardCmdManager::readKeyboardInput());
+		const auto input =
+			KeyboardInputTools::KeyboardCmdManager::readKeyboardInput();
+		const bool validCmd = cmdManager.parseCmd(input);
+		
+		if (!validCmd)
+		{
+			std::cerr << input << ": Invalid command." << std::endl;
+		}
 	}
 }
 

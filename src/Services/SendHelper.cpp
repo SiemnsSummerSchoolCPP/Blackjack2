@@ -47,7 +47,7 @@ std::string SendHelper::makeMsgPrefix() const
 		std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 	
 	auto ss = std::stringstream();
-	ss << std::put_time(localtime(&now), "[%T]");
+	ss << std::put_time(localtime(&now), "[%T] ");
 	
 	return ss.str();
 }

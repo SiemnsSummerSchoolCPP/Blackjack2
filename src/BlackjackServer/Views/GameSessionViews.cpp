@@ -1,6 +1,7 @@
 #include "Views/GameSessionViews.hpp"
 #include "Models/GameSessionModels.h"
 #include <sstream>
+#include <iomanip>
 
 using namespace BlackjackServer::Views;
 
@@ -42,7 +43,8 @@ std::string GameSessionViews::initialHandsSetup_View(
 	for (const auto& player : *model.players)
 	{
 		ss	<< player->userModel->name << ": "
-			<< m_printHelper.formatHands(player->hands);
+			<< m_printHelper.formatHands(player->hands)
+			<< std::endl;
 	}
 	return ss.str();
 }
@@ -58,9 +60,9 @@ std::string GameSessionViews::startBettingPhase_View() const
 ** Leave game action.
 */
 
-std::string GameSessionViews::allLeftResetingTheGame_View() const
+std::string GameSessionViews::resetingTheGame_View() const
 {
-	return "All players have left. The game will now end.";
+	return "The game will now end.";
 }
 
 /*
@@ -167,7 +169,7 @@ std::string GameSessionViews::notHitStandPhase() const
 	return "It's not the Hit-Stand phase.";
 }
 
-std::string GameSessionViews::successfullHit(
+std::string GameSessionViews::successfullHit_View(
 	const Models::GmSessionModels::SuccessfulHitModel& model) const
 {
 	std::stringstream ss;
@@ -189,5 +191,61 @@ std::string GameSessionViews::successfullStand(
 		<< std::endl
 		<< "- His card: " << m_printHelper.formatHands(model.player->hands)
 		<< std::endl;
+	return ss.str();
+}
+
+/*
+** Cashing
+*/
+
+std::string GameSessionViews::startCashing_View() const
+{
+	return "All hands are standing. Now it's the cashing phase.";
+}
+
+std::string GameSessionViews::dealersFinalCards_View(
+	const DataLayer::Hand& dealersHand,
+	const int nbOfCardsDealt) const
+{
+	std::stringstream ss;
+	
+	if (nbOfCardsDealt != 0)
+	{
+		ss	<< "The dealer gets " << nbOfCardsDealt << " more card(s). ";
+	}
+	
+	ss	<< "Dealer's hand: [ " << m_printHelper.formatHand(dealersHand) << " ]";
+	return ss.str();
+}
+
+std::string GameSessionViews::handCashResult_ServerView(
+	const DataLayer::PlayerModel& player,
+	const DataLayer::PlayerHand& hand,
+	const DataLayer::CashResult& cashResult) const
+{
+	std::stringstream ss;
+	
+	ss	<< player.userModel->name << ": "
+		<< "{" << m_printHelper.formatHand(hand) << "}"
+		<< ": [" << cashResult.state << "]: "
+		<< "Received: " << m_printHelper.formatMoney(cashResult.receivedMoney)
+		<< " Income: " << m_printHelper.formatMoney(cashResult.income);
+	return ss.str();
+}
+
+std::string GameSessionViews::handCashResult_View(
+	const DataLayer::PlayerHand& hand,
+	const DataLayer::CashResult& cashResult) const
+{
+	std::stringstream ss;
+	
+	ss	<< "{" << m_printHelper.formatHand(hand) << "}" << ": "
+		<< "[" << cashResult.state << "] ";
+
+	ss	<< "(" << m_printHelper.formatMoney(cashResult.bet->amount) << ") x "
+		<< std::fixed << std::setprecision(1) << cashResult.winMultipiler;
+	
+	ss << " Income: " << m_printHelper.formatMoney(cashResult.income);
+
 	return ss.str();
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "PointsTools.hpp"
 #include "DataLayer/BjDatabase.hpp"
 
 namespace BlackjackLogic
@@ -9,14 +10,22 @@ namespace BlackjackLogic
 	public:
 		static const int shoeSize = 5;
 	
-		DealerLogic(DataLayer::BjDatabase* dbContext);
+		DealerLogic(
+			const PointsTools& pointsTools,
+			DataLayer::BjDatabase* dbContext);
 		
 		void init() const;
+		void endTheGame() const;
+		
+		int dealersHandPoints() const;
 		PlayingCards::Card& dealCard() const;
-		void dealfirstDealersCards() const;
+		
+		void dealFirstDealersCards() const;
+		void dealFinalDealersCards() const;
 		void dealPlayersCards() const;
 		
 	private:
+		const PointsTools& m_pointsTools;
 		DataLayer::BjDatabase& m_dbContext;
 		
 		PlayingCards::Shoe& getShoe() const;

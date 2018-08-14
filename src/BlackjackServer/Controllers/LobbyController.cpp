@@ -6,6 +6,7 @@
 
 using namespace BlackjackServer::Controllers;
 using namespace BlackjackServer::Models;
+using namespace DataLayer;
 
 LobbyController::LobbyController(
 	Views::LobbyViews& views,
@@ -57,6 +58,13 @@ int LobbyController::clientLeave(
 	
 	if (m_userManager.userIsAPlayer(user))
 	{
+		if (m_dbContext.getPlayers().size() == 1)
+		{
+			const auto view = m_views.allPlayersLeft_View();
+			m_logger.logAction(view);
+			m_sendHelper.broadcastMsg(view);
+		}
+	
 		m_gmSessionCtrl->leaveGame(
 			connection,
 			*m_dbContext.getPlayers()[user.uniqueId]);
@@ -115,6 +123,25 @@ int LobbyController::setReady(
 	if (user->joinState.isReady)
 	{
 		handleAlreadyReady(connection);
+		return -1;
+	}
+	
+	if (m_dbContext.getGameSession().state != GameSession::State::kNotStarted)
+	{
+		m_logger.logAction(
+			connection,
+			m_views.setReadyAnotherGameIsBeingPlayed_ServerView());
+		m_sendHelper.whisperMsg(
+			connection,
+			m_views.anotherGameIsBeingPlayed_View());
+		return -1;
+	}
+	
+	if (!m_userManager.userCanJoin(*user))
+	{
+		m_sendHelper.whisperMsg(
+			connection,
+			m_views.userIsUnableToPlay_View(*user));
 		return -1;
 	}
 	

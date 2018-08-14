@@ -35,8 +35,8 @@ void GameSessionController::startGame(
 	m_sendHelper.broadcastMsg(view);
 	m_logger.logAction(view);
 	
+	m_dbContext.getGameSession().state = GameSession::State::kBettingPhase;
 	createThePlayers(users);
-	m_gmStatusLogic.setBettingPhase();
 	
 	const auto betPhaseView = m_views.startBettingPhase_View();
 	m_sendHelper.broadcastMsg(betPhaseView);
@@ -45,13 +45,16 @@ void GameSessionController::startGame(
 
 void GameSessionController::startHitStandPhase() const
 {
-	const auto view = m_views.startHitStandPhase_View();
-	m_logger.logAction(view);
-	m_sendHelper.broadcastMsg(view);
+	// General announcement.
+	{
+		const auto view = m_views.startHitStandPhase_View();
+		m_logger.logAction(view);
+		m_sendHelper.broadcastMsg(view);
+	}
 	
 	m_dbContext.getGameSession().state = GameSession::State::kHitStandPhase;
 	m_dealerLogic.init();
-	m_dealerLogic.dealfirstDealersCards();
+	m_dealerLogic.dealFirstDealersCards();
 	m_dealerLogic.dealPlayersCards();
 	
 	// Print the initial cards setup.
@@ -66,23 +69,74 @@ void GameSessionController::startHitStandPhase() const
 		m_logger.logAction(view);
 		m_sendHelper.broadcastMsg(view);
 	}
+	
+	if (m_gmStatusLogic.allHandsAreStanding())
+		startCashing();
+}
+
+void GameSessionController::startCashing() const
+{
+	{
+		const auto view = m_views.startCashing_View();
+		m_logger.logAction(view);
+		m_sendHelper.broadcastMsg(view);
+	}
+	
+	{
+		m_dealerLogic.dealFinalDealersCards();
+		const auto view = m_views.dealersFinalCards_View(
+			*m_dbContext.getGameSession().dealersHand,
+			m_dbContext.getGameSession().dealersHand->cards.size() - 2);
+		
+		m_logger.logAction(view);
+		m_sendHelper.broadcastMsg(view);
+	}
+	
+	std::stringstream ss;
+	
+	const auto dealersPoints = m_dealerLogic.dealersHandPoints();
+	for (auto& pair : m_dbContext.getPlayers())
+	{
+		auto& player = *pair.second;
+		
+		ss << std::endl << player.userModel->name << ":\n";
+		for (const auto& hand : player.hands)
+		{
+			const auto cashResult = m_playerLogic.cash(*hand, dealersPoints);
+			
+			ss	<< "- " << m_views.handCashResult_View(*hand, cashResult)
+				<< std::endl;
+			
+			player.userModel->money += cashResult.receivedMoney;
+			m_logger.logAction(
+				m_views.handCashResult_ServerView(player, *hand, cashResult));
+		}
+	}
+	
+	m_sendHelper.broadcastMsg(ss.str());
+	
+	for (auto& pair : m_dbContext.getPlayers())
+	{
+		pair.second->userModel->joinState.isReady = false;
+	}
+	
+	endGame();
 }
 
 void GameSessionController::endGame() const
 {
 	m_dbContext.getGameSession().state = GameSession::State::kNotStarted;
 	
-	if (m_dbContext.getGameSession().dealersHand)
-		delete m_dbContext.getGameSession().dealersHand;
+	m_dealerLogic.endTheGame();
+	for (auto& pair : m_dbContext.getPlayers())
+	{
+		delete pair.second;
+	}
+	m_dbContext.getPlayers().clear();
 	
-	if (m_dbContext.getGameSession().shoe)
-		delete m_dbContext.getGameSession().shoe;
-	
-	const auto view = m_views.allLeftResetingTheGame_View();
+	const auto view = m_views.resetingTheGame_View();
 	m_logger.logAction(view);
 	m_sendHelper.broadcastMsg(view);
-	
-	
 }
 
 void GameSessionController::leaveGame(
@@ -100,6 +154,8 @@ void GameSessionController::leaveGame(
 	
 	if (m_gmStatusLogic.allPlayersHavePlacedTheirBets())
 		startHitStandPhase();
+	else if (m_gmStatusLogic.allHandsAreStanding())
+		startCashing();
 }
 
 /*
@@ -241,9 +297,13 @@ int GameSessionController::hitRequest(
 		return -1;
 	}
 	
-	const auto view = m_views.successfullHit({ newCard, &player });
+	const auto view = m_views.successfullHit_View({ newCard, &player });
 	m_logger.logAction(connection, view);
 	m_sendHelper.broadcastMsg(view);
+	
+	if (m_gmStatusLogic.allHandsAreStanding())
+		startCashing();
+	
 	return 0;
 }
 
@@ -299,6 +359,9 @@ int GameSessionController::standRequest(
 	const auto view = m_views.successfullStand({ &player });
 	m_logger.logAction(connection, view);
 	m_sendHelper.broadcastMsg(view);
+	
+	if (m_gmStatusLogic.allHandsAreStanding())
+		startCashing();
 	return 0;
 }
 
