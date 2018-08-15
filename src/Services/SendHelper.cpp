@@ -7,8 +7,8 @@
 using namespace Services;
 
 SendHelper::SendHelper(
-	const NetworkTools::NetworkHost& networkHost,
-	Services::Logger& logger,
+	const NetworkTools::NetworkHost* networkHost,
+	Services::Logger* logger,
 	const Requests::RequestHeader msgHeader) :
 	m_networkHost(networkHost),
 	m_logger(logger),
@@ -36,12 +36,12 @@ void SendHelper::broadcastMsg(
 {
 	const auto finalMsg = appendCandyStuff(msg);
 	const auto resultRequest = Requests::Request(m_msgHeader, finalMsg);
-	m_networkHost.broadcastRequest(resultRequest, exceptConnection);
+	m_networkHost->broadcastRequest(resultRequest, exceptConnection);
 }
 
 void SendHelper::logAndBroadcast(const std::string& msg) const
 {
-	m_logger.logAction(msg);
+	m_logger->logAction(msg);
 	broadcastMsg(msg);
 }
 

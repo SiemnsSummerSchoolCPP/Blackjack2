@@ -138,43 +138,43 @@ int main(const int argc, const char* const* const argv)
 	auto pointsTools = BlackjackLogic::PointsTools();
 	auto playerHandLogic = BlackjackLogic::PlayerHandLogic();
 	auto playerLogic = BlackjackLogic::PlayerLogic(
-		playerHandLogic,
-		pointsTools);
-	auto dealerLogic = BlackjackLogic::DealerLogic(pointsTools, &dbContext);
+		&playerHandLogic,
+		&pointsTools);
+	auto dealerLogic = BlackjackLogic::DealerLogic(&pointsTools, &dbContext);
 	auto gmStatusLogic = BlackjackLogic::GameStatusLogic(
-		dbContext,
-		playerLogic);
+		&dbContext,
+		&playerLogic);
 	
 	// Services.
 	auto logger = Services::Logger();
-	auto userManager = Services::UserManager(dbContext);
+	auto userManager = Services::UserManager(&dbContext);
 	auto sendHelper = Services::SendHelper(
-		networkHost,
-		logger,
+		&networkHost,
+		&logger,
 		kReceiveMsgHeader);
-	auto printHelper = Services::PrintHelper(pointsTools, 2, "§");
+	auto printHelper = Services::PrintHelper(&pointsTools, 2, "§");
 
 	// Views.
-	auto lobbyViews = Views::LobbyViews(printHelper);
+	auto lobbyViews = Views::LobbyViews(&printHelper);
 	auto gmSessionViews = Views::GameSessionViews(&printHelper);
 
 	// Declare controllers.
 	auto gmSessionController = Controllers::GameSessionController(
-		gmSessionViews,
-		logger,
-		sendHelper,
-		userManager,
-		dbContext,
-		gmStatusLogic,
-		playerLogic,
-		dealerLogic);
+		&gmSessionViews,
+		&logger,
+		&sendHelper,
+		&userManager,
+		&dbContext,
+		&gmStatusLogic,
+		&playerLogic,
+		&dealerLogic);
 	
 	auto lobbyController = Controllers::LobbyController(
-		lobbyViews,
-		logger,
-		sendHelper,
-		userManager,
-		dbContext,
+		&lobbyViews,
+		&logger,
+		&sendHelper,
+		&userManager,
+		&dbContext,
 		&gmSessionController);
 	
 	// Map controller's actions.

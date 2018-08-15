@@ -10,7 +10,7 @@ namespace Services
 	{
 	public:
 		PrintHelper(
-			const BlackjackLogic::PointsTools& pointsTools,
+			const BlackjackLogic::PointsTools* pointsTools,
 			size_t moneyPrecision = 2,
 			const std::string& moneySign = "$");
 
@@ -21,7 +21,7 @@ namespace Services
 			const std::vector<DataLayer::PlayerHand*>&) const;
 	
 	private:
-		const BlackjackLogic::PointsTools& m_pointsTools;
+		const BlackjackLogic::PointsTools* m_pointsTools;
 		const size_t m_moneyPrecision;
 		const std::string m_moneySign;
 	};

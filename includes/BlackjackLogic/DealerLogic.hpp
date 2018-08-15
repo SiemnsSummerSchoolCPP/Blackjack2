@@ -11,7 +11,7 @@ namespace BlackjackLogic
 		static const int shoeSize = 5;
 	
 		DealerLogic(
-			const PointsTools& pointsTools,
+			const PointsTools* pointsTools,
 			DataLayer::BjDatabase* dbContext);
 		
 		void init() const;
@@ -25,8 +25,8 @@ namespace BlackjackLogic
 		void dealPlayersCards() const;
 		
 	private:
-		const PointsTools& m_pointsTools;
-		DataLayer::BjDatabase& m_dbContext;
+		const PointsTools* m_pointsTools;
+		DataLayer::BjDatabase* m_dbContext;
 		
 		PlayingCards::Shoe& getShoe() const;
 	};

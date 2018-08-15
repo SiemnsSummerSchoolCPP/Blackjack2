@@ -25,12 +25,12 @@ namespace BlackjackServer { namespace Controllers
 		constexpr static const double initialMoney = 1000;
 		
 		LobbyController(
-			Views::LobbyViews& views,
-			const Services::Logger& logger,
-			const Services::SendHelper& sendHelper,
-			Services::UserManager& userManager,
-			DataLayer::BjDatabase& dbContext,
-			GameSessionController* gmSessionCtrl);
+			const Views::LobbyViews* views,
+			const Services::Logger* logger,
+			const Services::SendHelper* sendHelper,
+			const Services::UserManager* userManager,
+			DataLayer::BjDatabase* dbContext,
+			const GameSessionController* gmSessionCtrl);
 		
 		int clientJoin(
 			const SocketConnection::Connection& connection,
@@ -59,12 +59,12 @@ namespace BlackjackServer { namespace Controllers
 		static const int maxNameLength = 13;
 		static const int minNameLength = 3;
 	
-		Views::LobbyViews& m_views;
-		const Services::Logger& m_logger;
-		const Services::SendHelper& m_sendHelper;
-		Services::UserManager& m_userManager;
-		DataLayer::BjDatabase& m_dbContext;
-		GameSessionController* m_gmSessionCtrl;
+		const Views::LobbyViews* m_views;
+		const Services::Logger* m_logger;
+		const Services::SendHelper* m_sendHelper;
+		const Services::UserManager* m_userManager;
+		DataLayer::BjDatabase* m_dbContext;
+		const GameSessionController* m_gmSessionCtrl;
 		
 		void handleInvalidName(
 			const SocketConnection::Connection& connection,

@@ -151,7 +151,7 @@ int main(const int argc, const char* const* const argv)
 	// Declare controllers.
 	auto msgReaderController = Controllers::MsgReadController();
 	const auto userInputLobbyController =
-		UserInputControllers::LobbyController(networkClient);
+		UserInputControllers::LobbyController(&networkClient);
 	const auto userInGameCtrl =
 		UserInputControllers::GameController(&networkClient);
 	

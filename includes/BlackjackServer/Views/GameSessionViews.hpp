@@ -57,6 +57,6 @@ namespace BlackjackServer { namespace Views
 			const Models::GmSessionModels::SuccessfulBetModel&) const;
 		
 	private:
-		const Services::PrintHelper& m_printHelper;
+		const Services::PrintHelper* m_printHelper;
 	};
 }}

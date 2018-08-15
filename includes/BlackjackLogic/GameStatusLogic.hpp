@@ -11,14 +11,14 @@ namespace BlackjackLogic
 	{
 	public:
 		GameStatusLogic(
-			DataLayer::BjDatabase& dbContext,
-			const PlayerLogic& playerLogic);
+			DataLayer::BjDatabase* dbContext,
+			const PlayerLogic* playerLogic);
 	
 		bool allPlayersHavePlacedTheirBets() const;
 		bool allHandsAreStanding() const;
 		
 	private:
-		DataLayer::BjDatabase& m_dbContext;
-		const PlayerLogic& m_playerLogic;
+		DataLayer::BjDatabase* m_dbContext;
+		const PlayerLogic* m_playerLogic;
 	};
 }

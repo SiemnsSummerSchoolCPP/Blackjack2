@@ -7,7 +7,7 @@ namespace Services
 	class UserManager
 	{
 	public:
-		UserManager(DataLayer::BjDatabase& dbContext);
+		UserManager(DataLayer::BjDatabase* dbContext);
 		
 		bool userIsBankrupt(const DataLayer::UserModel& user) const;
 		bool userCanJoin(const DataLayer::UserModel& user) const;
@@ -21,6 +21,6 @@ namespace Services
 		std::vector<DataLayer::UserModel*> getUsersToWait() const;
 		
 	private:
-		DataLayer::BjDatabase& m_dbContext;
+		DataLayer::BjDatabase* m_dbContext;
 	};
 }

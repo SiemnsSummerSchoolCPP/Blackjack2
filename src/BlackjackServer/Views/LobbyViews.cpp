@@ -5,7 +5,7 @@ using namespace BlackjackServer;
 using namespace BlackjackServer::Views;
 
 LobbyViews::LobbyViews(
-	const Services::PrintHelper& printHelper) :
+	const Services::PrintHelper* printHelper) :
 	m_printHelper(printHelper)
 {
 }
@@ -100,7 +100,7 @@ std::string LobbyViews::userIsUnableToPlay_View(
 	std::stringstream ss;
 	
 	ss	<< "You are unable to join. Current balance: "
-		<< m_printHelper.formatMoney(user.money)
+		<< m_printHelper->formatMoney(user.money)
 		<< ".";
 	return ss.str();
 }

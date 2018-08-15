@@ -5,7 +5,7 @@
 using namespace Services;
 
 PrintHelper::PrintHelper(
-	const BlackjackLogic::PointsTools& pointsTools,
+	const BlackjackLogic::PointsTools* pointsTools,
 	const size_t precision,
 	const std::string& moneySign) :
 	m_pointsTools(pointsTools),
@@ -29,12 +29,12 @@ std::string PrintHelper::formatHand(const DataLayer::Hand& hand) const
 	
 	ss << hand << "(";
 	
-	const auto handPoints = m_pointsTools.getHandPoints(hand);
-	if (m_pointsTools.isBlackjack(hand))
+	const auto handPoints = m_pointsTools->getHandPoints(hand);
+	if (m_pointsTools->isBlackjack(hand))
 		ss << "Blackjack!";
 	else
 	{
-		if (m_pointsTools.isBusted(handPoints))
+		if (m_pointsTools->isBusted(handPoints))
 			ss << "BUSTED: ";
 		ss << handPoints << "p";
 	}

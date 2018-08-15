@@ -7,7 +7,7 @@ using namespace BlackjackServer::Views;
 
 GameSessionViews::GameSessionViews(
 	const Services::PrintHelper* const printHelper) :
-	m_printHelper(*printHelper)
+	m_printHelper(printHelper)
 {
 }
 
@@ -23,7 +23,7 @@ std::string GameSessionViews::startGame_View(
 	for (const auto& user : *model.joinedUsers)
 	{
 		ss	<< "- " << user->name
-			<< ": " << m_printHelper.formatMoney(user->money)
+			<< ": " << m_printHelper->formatMoney(user->money)
 			<< std::endl;
 	}
 	return ss.str();
@@ -43,7 +43,7 @@ std::string GameSessionViews::initialHandsSetup_View(
 	for (const auto& player : *model.players)
 	{
 		ss	<< player->userModel->name << ": "
-			<< m_printHelper.formatHands(player->hands)
+			<< m_printHelper->formatHands(player->hands)
 			<< std::endl;
 	}
 	return ss.str();
@@ -111,7 +111,7 @@ std::string GameSessionViews::invalidBet_View(const DataLayer::Bet& bet) const
 {
 	std::stringstream ss;
 	
-	ss << m_printHelper.formatMoney(bet.amount) << ": Invalid bet.";
+	ss << m_printHelper->formatMoney(bet.amount) << ": Invalid bet.";
 	return ss.str();
 }
 
@@ -121,9 +121,9 @@ std::string GameSessionViews::notEnoughMoney_View(
 {
 	std::stringstream ss;
 	
-	ss	<< "Not enough money. Total: " << m_printHelper.formatMoney(total)
-		<< ". Required: " << m_printHelper.formatMoney(required) << ". "
-		<< "You need " << m_printHelper.formatMoney(required - total)
+	ss	<< "Not enough money. Total: " << m_printHelper->formatMoney(total)
+		<< ". Required: " << m_printHelper->formatMoney(required) << ". "
+		<< "You need " << m_printHelper->formatMoney(required - total)
 		<< " more.";
 	return ss.str();
 }
@@ -133,7 +133,7 @@ std::string GameSessionViews::alreadyPlacedABet_View(
 {
 	std::stringstream ss;
 	
-	ss	<< "Already placed a bet: " << m_printHelper.formatMoney(bet.amount);
+	ss	<< "Already placed a bet: " << m_printHelper->formatMoney(bet.amount);
 	return ss.str();
 }
 
@@ -143,9 +143,9 @@ std::string GameSessionViews::successfulBet_View(
 	std::stringstream ss;
 	
 	ss	<< model.player->userModel->name << " placed a bet: "
-		<< m_printHelper.formatMoney(model.bet->amount) << ". "
+		<< m_printHelper->formatMoney(model.bet->amount) << ". "
 		<< "Money left: "
-		<< m_printHelper.formatMoney(model.player->userModel->money);
+		<< m_printHelper->formatMoney(model.player->userModel->money);
 	return ss.str();
 }
 
@@ -155,7 +155,7 @@ std::string GameSessionViews::successfulBet_ServerView(
 	std::stringstream ss;
 	
 	ss	<< model.player->userModel->name << " placed a bet: "
-		<< m_printHelper.formatMoney(model.bet->amount) << " on hand "
+		<< m_printHelper->formatMoney(model.bet->amount) << " on hand "
 		<< model.bet->handIndex << ".";
 	return ss.str();
 }
@@ -177,7 +177,7 @@ std::string GameSessionViews::successfullHit_View(
 	ss	<< model.player->userModel->name
 		<< " has hit another card: " << *model.cardDealt
 		<< std::endl
-		<< "- His card: " << m_printHelper.formatHands(model.player->hands)
+		<< "- His card: " << m_printHelper->formatHands(model.player->hands)
 		<< std::endl;
 	return ss.str();
 }
@@ -189,7 +189,7 @@ std::string GameSessionViews::successfullStand(
 	
 	ss	<< model.player->userModel->name << " stands."
 		<< std::endl
-		<< "- His card: " << m_printHelper.formatHands(model.player->hands)
+		<< "- His card: " << m_printHelper->formatHands(model.player->hands)
 		<< std::endl;
 	return ss.str();
 }
@@ -214,7 +214,7 @@ std::string GameSessionViews::dealersFinalCards_View(
 		ss	<< "The dealer gets " << nbOfCardsDealt << " more card(s). ";
 	}
 	
-	ss	<< "Dealer's hand: [ " << m_printHelper.formatHand(dealersHand) << " ]";
+	ss << "Dealer's hand: [ " << m_printHelper->formatHand(dealersHand) << " ]";
 	return ss.str();
 }
 
@@ -226,10 +226,10 @@ std::string GameSessionViews::handCashResult_ServerView(
 	std::stringstream ss;
 	
 	ss	<< player.userModel->name << ": "
-		<< "{" << m_printHelper.formatHand(hand) << "}"
+		<< "{" << m_printHelper->formatHand(hand) << "}"
 		<< ": [" << cashResult.state << "]: "
-		<< "Received: " << m_printHelper.formatMoney(cashResult.receivedMoney)
-		<< " Income: " << m_printHelper.formatMoney(cashResult.income);
+		<< "Received: " << m_printHelper->formatMoney(cashResult.receivedMoney)
+		<< " Income: " << m_printHelper->formatMoney(cashResult.income);
 	return ss.str();
 }
 
@@ -239,13 +239,13 @@ std::string GameSessionViews::handCashResult_View(
 {
 	std::stringstream ss;
 	
-	ss	<< "{" << m_printHelper.formatHand(hand) << "}" << ": "
+	ss	<< "{" << m_printHelper->formatHand(hand) << "}" << ": "
 		<< "[" << cashResult.state << "] ";
 
-	ss	<< "(" << m_printHelper.formatMoney(cashResult.bet->amount) << ") x "
+	ss	<< "(" << m_printHelper->formatMoney(cashResult.bet->amount) << ") x "
 		<< std::fixed << std::setprecision(1) << cashResult.winMultipiler;
 	
-	ss << " Income: " << m_printHelper.formatMoney(cashResult.income);
+	ss << " Income: " << m_printHelper->formatMoney(cashResult.income);
 
 	return ss.str();
 }

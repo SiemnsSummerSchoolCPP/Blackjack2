@@ -5,7 +5,7 @@
 using namespace BlackjackClient::UserInputControllers;
 
 LobbyController::LobbyController(
-	const NetworkTools::NetworkClient& networkClient) :
+	const NetworkTools::NetworkClient* networkClient) :
 	m_networkClient(networkClient)
 {
 }
@@ -32,7 +32,7 @@ bool LobbyController::sendMsg(const std::string userInput) const
 		return true;
 	}
 	
-	m_networkClient.sendRequest(Requests::Request(
+	m_networkClient->sendRequest(Requests::Request(
 		BlackjackServer::Controllers::LobbyController::RequestHeaders::kSendMsg,
 		msg
 	));
@@ -55,7 +55,7 @@ bool LobbyController::changeName(const std::string userInput) const
 	if (!itMatches)
 		return false;
 	
-	m_networkClient.sendRequest(Requests::Request(
+	m_networkClient->sendRequest(Requests::Request(
 		BlackjackServer::Controllers::LobbyController::RequestHeaders::kSetName,
 		regexSearchBuf[1].str()
 	));
@@ -82,6 +82,6 @@ bool LobbyController::setReady(const std::string userInput) const
 		BlackjackServer::Controllers
 			::LobbyController
 			::RequestHeaders::kSetReady;
-	m_networkClient.sendRequest(Requests::Request(header, "dummy str"));
+	m_networkClient->sendRequest(Requests::Request(header, "dummy str"));
 	return true;
 }

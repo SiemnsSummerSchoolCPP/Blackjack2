@@ -22,15 +22,15 @@ namespace BlackjackServer { namespace Controllers
 		};
 		
 		GameSessionController(
-			const Views::GameSessionViews& views,
-			const Services::Logger& logger,
-			const Services::SendHelper& sendHelper,
-			const Services::UserManager& userManager,
-			DataLayer::BjDatabase& dbContext,
+			const Views::GameSessionViews* views,
+			const Services::Logger* logger,
+			const Services::SendHelper* sendHelper,
+			const Services::UserManager* userManager,
+			DataLayer::BjDatabase* dbContext,
 			
-			BlackjackLogic::GameStatusLogic& gmStatusLogic,
-			BlackjackLogic::PlayerLogic& playerLogic,
-			BlackjackLogic::DealerLogic& dealerLogic
+			const BlackjackLogic::GameStatusLogic* gmStatusLogic,
+			const BlackjackLogic::PlayerLogic* playerLogic,
+			const BlackjackLogic::DealerLogic* dealerLogic
 		);
 	
 		void startGame(const std::vector<DataLayer::UserModel*>& users) const;
@@ -40,7 +40,7 @@ namespace BlackjackServer { namespace Controllers
 		void endGame() const;
 		void leaveGame(
 			const SocketConnection::Connection& connection,
-			const DataLayer::PlayerModel& player);
+			const DataLayer::PlayerModel& player) const;
 		
 		int betRequest(
 			const SocketConnection::Connection& connection,
@@ -53,15 +53,15 @@ namespace BlackjackServer { namespace Controllers
 			const Requests::Request& request) const;
 	
 	private:
-		const Views::GameSessionViews& m_views;
-		const Services::Logger& m_logger;
-		const Services::SendHelper& m_sendHelper;
-		const Services::UserManager& m_userManager;
-		DataLayer::BjDatabase& m_dbContext;
+		const Views::GameSessionViews* m_views;
+		const Services::Logger* m_logger;
+		const Services::SendHelper* m_sendHelper;
+		const Services::UserManager* m_userManager;
+		DataLayer::BjDatabase* m_dbContext;
 		
-		BlackjackLogic::GameStatusLogic& m_gmStatusLogic;
-		BlackjackLogic::PlayerLogic& m_playerLogic;
-		BlackjackLogic::DealerLogic& m_dealerLogic;
+		const BlackjackLogic::GameStatusLogic* m_gmStatusLogic;
+		const BlackjackLogic::PlayerLogic* m_playerLogic;
+		const BlackjackLogic::DealerLogic* m_dealerLogic;
 		
 		void createThePlayers(
 			const std::vector<DataLayer::UserModel*>& users) const;

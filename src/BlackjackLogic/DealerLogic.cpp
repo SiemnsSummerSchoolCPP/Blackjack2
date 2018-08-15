@@ -3,26 +3,26 @@
 using namespace BlackjackLogic;
 
 DealerLogic::DealerLogic(
-	const PointsTools& pointsTools,
+	const PointsTools* pointsTools,
 	DataLayer::BjDatabase* dbContext) :
 	m_pointsTools(pointsTools),
-	m_dbContext(*dbContext)
+	m_dbContext(dbContext)
 {
 }
 
 void DealerLogic::init() const
 {
-	m_dbContext.getGameSession().shoe = new PlayingCards::Shoe(shoeSize);
-	m_dbContext.getGameSession().dealersHand = new DataLayer::Hand();
+	m_dbContext->getGameSession().shoe = new PlayingCards::Shoe(shoeSize);
+	m_dbContext->getGameSession().dealersHand = new DataLayer::Hand();
 }
 
 void DealerLogic::endTheGame() const
 {
-//	if (m_dbContext.getGameSession().dealersHand)
-//		delete m_dbContext.getGameSession().dealersHand;
+//	if (m_dbContext->getGameSession().dealersHand)
+//		delete m_dbContext->getGameSession().dealersHand;
 //	
-//	if (m_dbContext.getGameSession().shoe)
-//		delete m_dbContext.getGameSession().shoe;
+//	if (m_dbContext->getGameSession().shoe)
+//		delete m_dbContext->getGameSession().shoe;
 }
 
 PlayingCards::Card& DealerLogic::dealCard() const
@@ -32,7 +32,7 @@ PlayingCards::Card& DealerLogic::dealCard() const
 
 void DealerLogic::dealFirstDealersCards() const
 {
-	auto& dealersHand = *m_dbContext.getGameSession().dealersHand;
+	auto& dealersHand = *m_dbContext->getGameSession().dealersHand;
 	
 	for (int i = 0; i < 2; i++)
 	{
@@ -42,15 +42,15 @@ void DealerLogic::dealFirstDealersCards() const
 
 void DealerLogic::dealFinalDealersCards() const
 {
-	while (dealersHandPoints() < m_pointsTools.dealerPointsLimit)
+	while (dealersHandPoints() < m_pointsTools->dealerPointsLimit)
 	{
-		m_dbContext.getGameSession().dealersHand->cards.push_back(&dealCard());
+		m_dbContext->getGameSession().dealersHand->cards.push_back(&dealCard());
 	}
 }
 
 void DealerLogic::dealPlayersCards() const
 {
-	for (const auto& pair : m_dbContext.getPlayers())
+	for (const auto& pair : m_dbContext->getPlayers())
 	{
 		const auto& player = *pair.second;
 		
@@ -67,11 +67,11 @@ void DealerLogic::dealPlayersCards() const
 
 PlayingCards::Shoe& DealerLogic::getShoe() const
 {
-	return *m_dbContext.getGameSession().shoe;
+	return *m_dbContext->getGameSession().shoe;
 }
 
 int DealerLogic::dealersHandPoints() const
 {
 	return
-		m_pointsTools.getHandPoints(*m_dbContext.getGameSession().dealersHand);
+		m_pointsTools->getHandPoints(*m_dbContext->getGameSession().dealersHand);
 }

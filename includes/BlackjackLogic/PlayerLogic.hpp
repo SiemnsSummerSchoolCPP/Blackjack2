@@ -20,8 +20,8 @@ namespace BlackjackLogic
 		struct AlreadyPlacedABet : public PlayerLogicException {};
 	
 		PlayerLogic(
-			const PlayerHandLogic& handLogic,
-			const PointsTools& pointsTools);
+			const PlayerHandLogic* handLogic,
+			const PointsTools* pointsTools);
 	
 		bool canHit(const DataLayer::PlayerModel& player) const;
 		bool hasPlacedHisBets(const DataLayer::PlayerModel& player) const;
@@ -45,7 +45,7 @@ namespace BlackjackLogic
 			int dealersPoints) const;
 		
 	private:
-		const PlayerHandLogic& m_handLogic;
-		const PointsTools& m_pointsTools;
+		const PlayerHandLogic* m_handLogic;
+		const PointsTools* m_pointsTools;
 	};
 }

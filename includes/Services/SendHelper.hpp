@@ -11,8 +11,8 @@ namespace Services
 	{
 	public:
 		SendHelper(
-			const NetworkTools::NetworkHost& networkHost,
-			Services::Logger& logger,
+			const NetworkTools::NetworkHost* networkHost,
+			Services::Logger* logger,
 			Requests::RequestHeader msgHeader);
 	
 		void whisperMsg(int socket, const std::string& msg) const;
@@ -28,8 +28,8 @@ namespace Services
 		void logAndBroadcast(const std::string& msg) const;
 		
 	private:
-		const NetworkTools::NetworkHost& m_networkHost;
-		Services::Logger& m_logger;
+		const NetworkTools::NetworkHost* m_networkHost;
+		Services::Logger* m_logger;
 		const Requests::RequestHeader m_msgHeader;
 		
 		std::string appendCandyStuff(const std::string& msg) const;

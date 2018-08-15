@@ -15,6 +15,6 @@ namespace BlackjackClient { namespace UserInputControllers
 		bool stand(std::string userInput) const;
 		
 	private:
-		const NetworkTools::NetworkClient& m_networkClient;
+		const NetworkTools::NetworkClient* m_networkClient;
 	};
 }}

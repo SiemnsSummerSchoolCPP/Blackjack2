@@ -8,7 +8,7 @@ using namespace BlackjackClient::UserInputControllers;
 
 GameController::GameController(
 	const NetworkTools::NetworkClient* networkClient) :
-	m_networkClient(*networkClient)
+	m_networkClient(networkClient)
 {
 }
 
@@ -49,7 +49,7 @@ bool GameController::placeABet(std::string userInput) const
 	unsigned char betBuf[sizeof(bet)];
 	
 	memcpy(betBuf, &bet, sizeof(bet));
-	m_networkClient.sendRequest(Requests::Request(
+	m_networkClient->sendRequest(Requests::Request(
 		BlackjackServer::Controllers::GameSessionController::kPlaceBet,
 		sizeof(bet),
 		betBuf
@@ -66,7 +66,7 @@ bool GameController::hit(std::string userInput) const
 	unsigned char betBuf[1];
 	
 	betBuf[0] = 0;
-	m_networkClient.sendRequest(Requests::Request(
+	m_networkClient->sendRequest(Requests::Request(
 		BlackjackServer::Controllers::GameSessionController::kHit,
 		sizeof(betBuf),
 		betBuf
@@ -83,7 +83,7 @@ bool GameController::stand(std::string userInput) const
 	unsigned char betBuf[1];
 	
 	betBuf[0] = 0;
-	m_networkClient.sendRequest(Requests::Request(
+	m_networkClient->sendRequest(Requests::Request(
 		BlackjackServer::Controllers::GameSessionController::kStand,
 		sizeof(betBuf),
 		betBuf

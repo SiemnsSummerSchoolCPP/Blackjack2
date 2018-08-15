@@ -10,7 +10,7 @@ namespace BlackjackServer { namespace Views
 	class LobbyViews
 	{
 	public:
-		LobbyViews(const Services::PrintHelper& printHelper);
+		LobbyViews(const Services::PrintHelper* printHelper);
 	
 		std::string clientJoin_View(
 			const Models::LobbyModels::ClientJoinModel& model) const;
@@ -39,6 +39,6 @@ namespace BlackjackServer { namespace Views
 		std::string successSetReady_View(std::string name) const;
 	
 	private:
-		const Services::PrintHelper& m_printHelper;
+		const Services::PrintHelper* m_printHelper;
 	};
 }}

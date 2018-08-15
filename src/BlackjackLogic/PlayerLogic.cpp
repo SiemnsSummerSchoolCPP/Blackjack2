@@ -4,8 +4,8 @@
 using namespace BlackjackLogic;
 
 PlayerLogic::PlayerLogic(
-	const PlayerHandLogic& handLogic,
-	const PointsTools& pointsTools) :
+	const PlayerHandLogic* handLogic,
+	const PointsTools* pointsTools) :
 	m_handLogic(handLogic),
 	m_pointsTools(pointsTools)
 {
@@ -15,7 +15,7 @@ bool PlayerLogic::canHit(const DataLayer::PlayerModel& player) const
 {
 	for (const auto& hand : player.hands)
 	{
-		if (m_handLogic.canHit(*hand))
+		if (m_handLogic->canHit(*hand))
 			return true;
 	}
 	
@@ -26,7 +26,7 @@ bool PlayerLogic::hasPlacedHisBets(const DataLayer::PlayerModel& player) const
 {
 	for (const auto& hand : player.hands)
 	{
-		if (!m_handLogic.aBetIsPlaced(*hand))
+		if (!m_handLogic->aBetIsPlaced(*hand))
 			return false;
 	}
 	return true;
@@ -82,7 +82,7 @@ const PlayingCards::Card* PlayerLogic::executeHit(
 
 	const auto& newCard = &newCardF();
 	hand.cards.push_back(newCard);
-	if (m_pointsTools.isBusted(hand) || m_pointsTools.isBlackjack(hand))
+	if (m_pointsTools->isBusted(hand) || m_pointsTools->isBlackjack(hand))
 	{
 		hand.state = DataLayer::PlayerHand::State::kStanding;
 	}
@@ -118,25 +118,25 @@ DataLayer::CashResult PlayerLogic::cash(
 {
 	DataLayer::CashResult cashResult;
 	
-	const auto handPoints = m_pointsTools.getHandPoints(hand);
+	const auto handPoints = m_pointsTools->getHandPoints(hand);
 	
 	cashResult.bet = &hand.bet;
-	if (m_pointsTools.isBusted(handPoints))
+	if (m_pointsTools->isBusted(handPoints))
 	{
 		cashResult.state = DataLayer::CashResult::State::kLost;
 		setCashResultMoney(cashResult, -1);
 	}
-	else if (m_pointsTools.isBlackjack(hand))
+	else if (m_pointsTools->isBlackjack(hand))
 	{
 		cashResult.state = DataLayer::CashResult::State::kBlackjack;
-		setCashResultMoney(cashResult, m_pointsTools.blackjackWinMultiplier);
+		setCashResultMoney(cashResult, m_pointsTools->blackjackWinMultiplier);
 	}
 	else if (
-		m_pointsTools.isBusted(dealersPoints) ||
+		m_pointsTools->isBusted(dealersPoints) ||
 		handPoints > dealersPoints)
 	{
 		cashResult.state = DataLayer::CashResult::State::kWin;
-		setCashResultMoney(cashResult, m_pointsTools.simplekWinMultiplier);
+		setCashResultMoney(cashResult, m_pointsTools->simplekWinMultiplier);
 	}
 	else if (handPoints < dealersPoints)
 	{
