@@ -65,5 +65,20 @@ namespace BlackjackServer { namespace Controllers
 		
 		void createThePlayers(
 			const std::vector<DataLayer::UserModel*>& users) const;
+		void printInitialCardsSetup() const;
+		void cashPlayers() const;
+		
+		bool basicRequestValidation(
+			DataLayer::GameSession::State requiredGameState,
+			const SocketConnection::Connection& connection) const;
+		
+		bool tryExecuteBet(
+			const SocketConnection::Connection& connection,
+			DataLayer::PlayerModel& player,
+			const DataLayer::Bet& bet) const;
+		
+		const PlayingCards::Card* tryExecuteHit(
+			const SocketConnection::Connection& connection,
+			DataLayer::PlayerModel& player) const;
 	};
 }}

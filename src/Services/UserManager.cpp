@@ -46,6 +46,14 @@ bool UserManager::userIsAPlayer(const DataLayer::UserModel& user) const
 	return false;
 }
 
+void UserManager::unreadyAllPlayers() const
+{
+	for (auto& pair : m_dbContext.getPlayers())
+	{
+		pair.second->userModel->joinState.isReady = false;
+	}
+}
+
 std::vector<DataLayer::PlayerModel*> UserManager::getPlayers() const
 {
 	std::vector<DataLayer::PlayerModel*> result;

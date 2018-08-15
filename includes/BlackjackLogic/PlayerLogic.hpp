@@ -11,11 +11,12 @@ namespace BlackjackLogic
 	class PlayerLogic
 	{
 	public:
-		struct NoSuchHand : public std::exception {};
-		struct HandIsNotSitting : public std::exception {};
-		struct InvalidBet : public std::exception {};
-		struct NotEnoughMoney : public std::exception {};
-		struct AlreadyPlacedABet : public std::exception {};
+		struct PlayerLogicException : public std::exception {};
+		struct NoSuchHand : public PlayerLogicException {};
+		struct HandIsNotSitting : public PlayerLogicException {};
+		struct InvalidBet : public PlayerLogicException {};
+		struct NotEnoughMoney : public PlayerLogicException {};
+		struct AlreadyPlacedABet : public PlayerLogicException {};
 	
 		PlayerLogic(
 			const PlayerHandLogic& handLogic,

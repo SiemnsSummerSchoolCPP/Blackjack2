@@ -148,7 +148,10 @@ int main(const int argc, const char* const* const argv)
 	// Services.
 	auto logger = Services::Logger();
 	auto userManager = Services::UserManager(dbContext);
-	auto sendHelper = Services::SendHelper(networkHost, kReceiveMsgHeader);
+	auto sendHelper = Services::SendHelper(
+		networkHost,
+		logger,
+		kReceiveMsgHeader);
 	auto printHelper = Services::PrintHelper(pointsTools, 2, "§");
 
 	// Views.

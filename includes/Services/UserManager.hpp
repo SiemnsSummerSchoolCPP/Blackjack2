@@ -14,6 +14,8 @@ namespace Services
 		bool gameIsReady() const;
 		bool userIsAPlayer(const DataLayer::UserModel& user) const;
 		
+		void unreadyAllPlayers() const;
+		
 		std::vector<DataLayer::PlayerModel*> getPlayers() const;
 		std::vector<DataLayer::UserModel*> getJoinables() const;
 		std::vector<DataLayer::UserModel*> getUsersToWait() const;
