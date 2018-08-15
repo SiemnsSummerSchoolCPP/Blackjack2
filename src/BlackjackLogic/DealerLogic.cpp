@@ -12,8 +12,8 @@ DealerLogic::DealerLogic(
 
 void DealerLogic::init() const
 {
-	m_dbContext->getGameSession().shoe = new PlayingCards::Shoe(shoeSize);
-	m_dbContext->getGameSession().dealersHand = new DataLayer::Hand();
+	m_dbContext->gameSession.shoe = new PlayingCards::Shoe(shoeSize);
+	m_dbContext->gameSession.dealersHand = new DataLayer::Hand();
 }
 
 void DealerLogic::endTheGame() const
@@ -32,7 +32,7 @@ PlayingCards::Card& DealerLogic::dealCard() const
 
 void DealerLogic::dealFirstDealersCards() const
 {
-	auto& dealersHand = *m_dbContext->getGameSession().dealersHand;
+	auto& dealersHand = *m_dbContext->gameSession.dealersHand;
 	
 	for (int i = 0; i < 2; i++)
 	{
@@ -44,13 +44,13 @@ void DealerLogic::dealFinalDealersCards() const
 {
 	while (dealersHandPoints() < m_pointsTools->dealerPointsLimit)
 	{
-		m_dbContext->getGameSession().dealersHand->cards.push_back(&dealCard());
+		m_dbContext->gameSession.dealersHand->cards.push_back(&dealCard());
 	}
 }
 
 void DealerLogic::dealPlayersCards() const
 {
-	for (const auto& pair : m_dbContext->getPlayers())
+	for (const auto& pair : m_dbContext->players)
 	{
 		const auto& player = *pair.second;
 		
@@ -67,11 +67,11 @@ void DealerLogic::dealPlayersCards() const
 
 PlayingCards::Shoe& DealerLogic::getShoe() const
 {
-	return *m_dbContext->getGameSession().shoe;
+	return *m_dbContext->gameSession.shoe;
 }
 
 int DealerLogic::dealersHandPoints() const
 {
 	return
-		m_pointsTools->getHandPoints(*m_dbContext->getGameSession().dealersHand);
+		m_pointsTools->getHandPoints(*m_dbContext->gameSession.dealersHand);
 }

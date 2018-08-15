@@ -10,20 +10,12 @@
 
 namespace DataLayer
 {
-	class BjDatabase
+	struct BjDatabase
 	{
-	public:
-		BjDatabase();
-	
-		std::unordered_map<int, UserModel*>& getUsers();
-		std::unordered_map<int, PlayerModel*>& getPlayers();
-		GameSession& getGameSession();
+		std::unordered_map<int, UserModel*> users;
+		std::unordered_map<int, PlayerModel*> players;
+		GameSession gameSession;
 		
-		UserModel* getUser(const SocketConnection::Connection& connection);
-		
-	private:
-		std::unordered_map<int, UserModel*> m_users;
-		std::unordered_map<int, PlayerModel*> m_players;
-		GameSession m_gameSession;
+		UserModel* getUser(const SocketConnection::Connection& connection) const;
 	};
 }

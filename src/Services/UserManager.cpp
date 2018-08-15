@@ -3,7 +3,8 @@
 
 using namespace Services;
 
-UserManager::UserManager(DataLayer::BjDatabase* dbContext) :
+UserManager::UserManager(
+	const DataLayer::BjDatabase* dbContext) :
 	m_dbContext(dbContext)
 {
 }
@@ -22,7 +23,7 @@ bool UserManager::gameIsReady() const
 {
 	static const auto notStarted = DataLayer::GameSession::State::kNotStarted;
 	
-	if (m_dbContext->getGameSession().state != notStarted)
+	if (m_dbContext->gameSession.state != notStarted)
 		return false;
 	
 	if (getJoinables().size() == 0)
@@ -36,7 +37,7 @@ bool UserManager::gameIsReady() const
 
 bool UserManager::userIsAPlayer(const DataLayer::UserModel& user) const
 {
-	for (const auto& pair : m_dbContext->getPlayers())
+	for (const auto& pair : m_dbContext->players)
 	{
 		if (pair.first == user.uniqueId)
 		{
@@ -49,7 +50,7 @@ bool UserManager::userIsAPlayer(const DataLayer::UserModel& user) const
 
 void UserManager::unreadyAllPlayers() const
 {
-	for (auto& pair : m_dbContext->getPlayers())
+	for (auto& pair : m_dbContext->players)
 	{
 		pair.second->userModel->joinState.isReady = false;
 	}
@@ -58,7 +59,7 @@ void UserManager::unreadyAllPlayers() const
 std::vector<DataLayer::PlayerModel*> UserManager::getPlayers() const
 {
 	std::vector<DataLayer::PlayerModel*> result;
-	auto& playersMap = m_dbContext->getPlayers();
+	auto& playersMap = m_dbContext->players;
 	
 	result.resize(playersMap.size());
 	std::transform(
@@ -77,7 +78,7 @@ std::vector<DataLayer::UserModel*> UserManager::getJoinables() const
 {
 	std::vector<DataLayer::UserModel*> result;
 	
-	for (auto& pair : m_dbContext->getUsers())
+	for (auto& pair : m_dbContext->users)
 	{
 		if (userCanJoin(*pair.second))
 		{

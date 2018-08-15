@@ -5,30 +5,12 @@
 
 using namespace DataLayer;
 
-BjDatabase::BjDatabase()
+UserModel* BjDatabase::getUser(
+	const SocketConnection::Connection& connection) const
 {
-}
-
-std::unordered_map<int, UserModel*>& BjDatabase::getUsers()
-{
-	return m_users;
-}
-
-std::unordered_map<int, PlayerModel*>& BjDatabase::getPlayers()
-{
-	return m_players;
-}
-
-GameSession& BjDatabase::getGameSession()
-{
-	return m_gameSession;
-}
-
-UserModel* BjDatabase::getUser(const SocketConnection::Connection& connection)
-{
-	if (m_users.find(connection.socket) == m_users.end())
+	if (users.find(connection.socket) == users.end())
 		throw "No such connection in database.";
 	
-	return m_users[connection.socket];
+	return users.at(connection.socket);
 }
 

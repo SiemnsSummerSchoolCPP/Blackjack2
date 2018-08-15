@@ -37,7 +37,7 @@ void GameSessionController::startGame(
 {
 	m_sendHelper->logAndBroadcast(m_views->startGame_View({ &users }));
 	
-	m_dbContext->getGameSession().state = GameSession::State::kBettingPhase;
+	m_dbContext->gameSession.state = GameSession::State::kBettingPhase;
 	createThePlayers(users);
 	
 	m_sendHelper->logAndBroadcast(m_views->startBettingPhase_View());
@@ -47,7 +47,7 @@ void GameSessionController::startHitStandPhase() const
 {
 	m_sendHelper->logAndBroadcast(m_views->startHitStandPhase_View());
 	
-	m_dbContext->getGameSession().state = GameSession::State::kHitStandPhase;
+	m_dbContext->gameSession.state = GameSession::State::kHitStandPhase;
 	m_dealerLogic->init();
 	m_dealerLogic->dealFirstDealersCards();
 	m_dealerLogic->dealPlayersCards();
@@ -65,8 +65,8 @@ void GameSessionController::startCashing() const
 	m_dealerLogic->dealFinalDealersCards();
 	m_sendHelper->logAndBroadcast(
 		m_views->dealersFinalCards_View(
-			*m_dbContext->getGameSession().dealersHand,
-			m_dbContext->getGameSession().dealersHand->cards.size() - 2));
+			*m_dbContext->gameSession.dealersHand,
+			m_dbContext->gameSession.dealersHand->cards.size() - 2));
 	
 	cashPlayers();
 	m_userManager->unreadyAllPlayers();
@@ -75,14 +75,14 @@ void GameSessionController::startCashing() const
 
 void GameSessionController::endGame() const
 {
-	m_dbContext->getGameSession().state = GameSession::State::kNotStarted;
+	m_dbContext->gameSession.state = GameSession::State::kNotStarted;
 	
 	m_dealerLogic->endTheGame();
-	for (auto& pair : m_dbContext->getPlayers())
+	for (auto& pair : m_dbContext->players)
 	{
 		delete pair.second;
 	}
-	m_dbContext->getPlayers().clear();
+	m_dbContext->players.clear();
 	
 	const auto view = m_views->resetingTheGame_View();
 	m_logger->logAction(view);
@@ -93,10 +93,10 @@ void GameSessionController::leaveGame(
 	const SocketConnection::Connection& connection,
 	const DataLayer::PlayerModel& player) const
 {
-	m_dbContext->getPlayers().erase(player.userModel->uniqueId);
+	m_dbContext->players.erase(player.userModel->uniqueId);
 	
-	if (m_dbContext->getGameSession().state != notStartedGmState &&
-		m_dbContext->getPlayers().size() == 0)
+	if (m_dbContext->gameSession.state != notStartedGmState &&
+		m_dbContext->players.size() == 0)
 	{
 		endGame();
 		return;
@@ -119,7 +119,7 @@ int GameSessionController::betRequest(
 	if (!basicRequestValidation(GameSession::State::kBettingPhase, connection))
 		return -1;
 
-	auto& player = *m_dbContext->getPlayers()[connection.socket];
+	auto& player = *m_dbContext->players[connection.socket];
 	auto bet = DataLayer::Bet();
 
 	assert(request.dataLen == sizeof(bet));
@@ -150,7 +150,7 @@ int GameSessionController::hitRequest(
 		return -1;
 	
 	const auto& user = *m_dbContext->getUser(connection);
-	auto& player = *m_dbContext->getPlayers()[user.uniqueId];
+	auto& player = *m_dbContext->players[user.uniqueId];
 	
 	const PlayingCards::Card* newCard = tryExecuteHit(connection, player);
 	if (newCard == nullptr)
@@ -174,7 +174,7 @@ int GameSessionController::standRequest(
 		return -1;
 	
 	const auto& user = *m_dbContext->getUser(connection);
-	auto& player = *m_dbContext->getPlayers()[user.uniqueId];
+	auto& player = *m_dbContext->players[user.uniqueId];
 	
 	std::string exception("");
 	try
@@ -219,8 +219,7 @@ void GameSessionController::createThePlayers(
 		auto firstHand = new DataLayer::PlayerHand();
 		newPlayer->hands.push_back(firstHand);
 		
-		m_dbContext->getPlayers().insert(
-			std::make_pair(user->uniqueId, newPlayer));
+		m_dbContext->players.insert(std::make_pair(user->uniqueId, newPlayer));
 	}
 }
 
@@ -229,7 +228,7 @@ void GameSessionController::printInitialCardsSetup() const
 	const auto players = m_userManager->getPlayers();
 	const auto view = m_views->initialHandsSetup_View(
 	{
-		m_dbContext->getGameSession().dealersHand->cards[0],
+		m_dbContext->gameSession.dealersHand->cards[0],
 		&players
 	});
 
@@ -242,7 +241,7 @@ void GameSessionController::cashPlayers() const
 	std::stringstream ss;
 	const auto dealersPoints = m_dealerLogic->dealersHandPoints();
 	
-	for (auto& pair : m_dbContext->getPlayers())
+	for (auto& pair : m_dbContext->players)
 	{
 		auto& player = *pair.second;
 		
@@ -268,11 +267,11 @@ bool GameSessionController::basicRequestValidation(
 {
 	std::string exception("");
 	
-	if (m_dbContext->getGameSession().state == GameSession::State::kNotStarted)
+	if (m_dbContext->gameSession.state == GameSession::State::kNotStarted)
 	{
 		exception = m_views->noGames_View();
 	}
-	else if (m_dbContext->getGameSession().state != requiredGameState)
+	else if (m_dbContext->gameSession.state != requiredGameState)
 	{
 		if (requiredGameState == GameSession::State::kHitStandPhase)
 			exception = m_views->notHitStandPhase();

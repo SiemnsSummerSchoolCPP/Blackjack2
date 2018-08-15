@@ -33,7 +33,7 @@ int LobbyController::clientJoin(
 	user->name = generateGuestName(connection);
 	user->uniqueId = connection.socket;
 	user->money = LobbyController::initialMoney;
-	m_dbContext->getUsers()[connection.socket] = user;
+	m_dbContext->users[connection.socket] = user;
 
 	auto model = Models::LobbyModels::ClientJoinModel();
 	model.name = user->name;
@@ -59,7 +59,7 @@ int LobbyController::clientLeave(
 	
 	if (m_userManager->userIsAPlayer(user))
 	{
-		if (m_dbContext->getPlayers().size() == 1)
+		if (m_dbContext->players.size() == 1)
 		{
 			const auto view = m_views->allPlayersLeft_View();
 			m_logger->logAction(view);
@@ -68,10 +68,10 @@ int LobbyController::clientLeave(
 	
 		m_gmSessionCtrl->leaveGame(
 			connection,
-			*m_dbContext->getPlayers()[user.uniqueId]);
+			*m_dbContext->players[user.uniqueId]);
 	}
 	
-	m_dbContext->getUsers().erase(user.uniqueId);
+	m_dbContext->users.erase(user.uniqueId);
 	return 0;
 }
 
@@ -127,7 +127,7 @@ int LobbyController::setReady(
 		return -1;
 	}
 	
-	if (m_dbContext->getGameSession().state != GameSession::State::kNotStarted)
+	if (m_dbContext->gameSession.state != GameSession::State::kNotStarted)
 	{
 		m_logger->logAction(
 			connection,
@@ -251,7 +251,7 @@ const char* LobbyController::nameIsValid(std::string name) const
 	if (name.length() < minNameLength)
 		return "Name too short.";
 	
-	const auto& allUsers = m_dbContext->getUsers();
+	const auto& allUsers = m_dbContext->users;
 	const auto findResult = std::find_if(
 		allUsers.begin(),
 		allUsers.end(),

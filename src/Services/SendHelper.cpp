@@ -8,7 +8,7 @@ using namespace Services;
 
 SendHelper::SendHelper(
 	const NetworkTools::NetworkHost* networkHost,
-	Services::Logger* logger,
+	const Services::Logger* logger,
 	const Requests::RequestHeader msgHeader) :
 	m_networkHost(networkHost),
 	m_logger(logger),
