@@ -1,5 +1,6 @@
 #include "Shoe.hpp"
 #include <algorithm>
+#include <assert.h>
 
 using namespace PlayingCards;
 

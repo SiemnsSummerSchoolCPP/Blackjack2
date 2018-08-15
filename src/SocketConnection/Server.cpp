@@ -5,6 +5,8 @@
 #include <cerrno>
 #include <sys/select.h>
 #include <unistd.h>
+#include <cstring>
+#include <algorithm>
 
 #define STR(someStr) (std::string() + someStr)
 

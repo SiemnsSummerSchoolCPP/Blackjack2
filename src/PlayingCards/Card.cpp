@@ -75,9 +75,12 @@ const char* Card::rankStr() const
 ** Operators.
 */
 
-std::ostream& PlayingCards::operator << (std::ostream& o, const Card& target)
+namespace PlayingCards
 {
-	return o << target.suitStr() << target.rankStr();
+	std::ostream& operator << (std::ostream& o, const Card& target)
+	{
+		return o << target.suitStr() << target.rankStr();
+	}
 }
 
 /*

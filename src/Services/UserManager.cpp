@@ -1,4 +1,5 @@
 #include "UserManager.hpp"
+#include <algorithm>
 
 using namespace Services;
 

@@ -2,6 +2,7 @@
 #include "SocketIO/Writer.hpp"
 #include <iomanip>
 #include <sstream>
+#include <chrono>
 
 using namespace Services;
 

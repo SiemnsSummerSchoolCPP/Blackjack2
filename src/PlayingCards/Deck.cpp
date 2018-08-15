@@ -1,4 +1,5 @@
 #include "Deck.hpp"
+#include <assert.h>
 
 using namespace PlayingCards;
 

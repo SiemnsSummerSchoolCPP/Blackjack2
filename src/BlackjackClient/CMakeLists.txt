@@ -29,6 +29,8 @@ file(GLOB includes
 	"${CMAKE_SOURCE_DIR}/includes/${PROJECT_NAME}/*.hpp"
 )
 
+find_package(Threads)
+
 add_executable(${PROJECT_NAME}
 	${srcs}
 	${includes}
@@ -49,6 +51,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
 	Requests
 	SocketConnection
 	KeyboardInputTools
+	${CMAKE_THREAD_LIBS_INIT}
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
@@ -63,5 +66,4 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 # String(CONCAT Flags ${Flags} " " "-Wextra")
 # String(CONCAT Flags ${Flags} " " "-Werror")
 # String(CONCAT Flags ${Flags} " " "-Waddress")
-# String(CONCAT Flags ${Flags} " " "-Waggregate-return")
 Set(CMAKE_CXX_FLAGS "${Flags}")

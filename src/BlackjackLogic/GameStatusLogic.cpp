@@ -1,4 +1,5 @@
 #include "GameStatusLogic.hpp"
+#include <algorithm>
 
 using namespace BlackjackLogic;
 using namespace DataLayer;

@@ -5,6 +5,7 @@
 #include "DataLayer/PlayerModel.h"
 #include "DataLayer/BjDatabase.hpp"
 #include "DataLayer/CashResult.h"
+#include <functional>
 
 namespace BlackjackLogic
 {

@@ -1,4 +1,5 @@
 #include "PlayerLogic.hpp"
+#include <algorithm>
 
 using namespace BlackjackLogic;
 

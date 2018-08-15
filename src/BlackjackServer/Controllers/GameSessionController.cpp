@@ -1,5 +1,7 @@
 #include "Controllers/GameSessionController.hpp"
 #include <sstream>
+#include <assert.h>
+#include <string.h>
 
 using namespace BlackjackLogic;
 using namespace BlackjackServer::Controllers;

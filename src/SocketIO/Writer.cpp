@@ -1,6 +1,7 @@
 #include "Writer.hpp"
 #include <unistd.h>
 #include <memory>
+#include <string.h>
 
 using namespace SocketIO;
 
