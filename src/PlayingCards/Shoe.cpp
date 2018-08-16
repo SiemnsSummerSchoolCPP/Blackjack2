@@ -9,7 +9,11 @@ Shoe::Shoe(size_t nbOfDecks)
 	for (int i = 0; i < nbOfDecks; i++)
 	{
 		auto cards = Deck::freshDeck();
-		m_cards.insert(m_cards.end(), cards, cards + Deck::nbOfCards);
+		for (int i = 0; i < Deck::nbOfCards; i++)
+		{
+			auto cardPtr = CardPtr(cards[i]);
+			m_cards.push_back(std::move(cardPtr));
+		}
 	}
 	assert(m_cards.size() == nbOfDecks * Deck::nbOfCards);
 	shuffle();
@@ -23,12 +27,12 @@ void Shoe::shuffle()
 	std::shuffle(m_cards.begin(), m_cards.end(), merseneTwister);
 }
 
-Card& Shoe::dealCard()
+CardPtr Shoe::dealCard()
 {
 	if (m_cards.size() == 0)
 		throw NotEnoughCards();
 
-	auto& card = *m_cards.back();
+	auto card = std::move(m_cards.back());
 	m_cards.pop_back();
 	return card;
 }

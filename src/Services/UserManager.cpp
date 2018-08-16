@@ -68,7 +68,7 @@ std::vector<DataLayer::PlayerModel*> UserManager::getPlayers() const
 		result.begin(),
 		[](const auto& pair)
 		{
-			return pair.second;
+			return pair.second.get();
 		});
 	
 	return result;
@@ -82,7 +82,7 @@ std::vector<DataLayer::UserModel*> UserManager::getJoinables() const
 	{
 		if (userCanJoin(*pair.second))
 		{
-			result.push_back(pair.second);
+			result.push_back(pair.second.get());
 		}
 	}
 	

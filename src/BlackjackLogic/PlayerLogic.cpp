@@ -71,7 +71,7 @@ void PlayerLogic::executeBet(
 const PlayingCards::Card* PlayerLogic::executeHit(
 	DataLayer::PlayerModel& player,
 	const int handIndex,
-	std::function<const PlayingCards::Card& ()> newCardF) const
+	std::function<PlayingCards::CardPtr ()> newCardF) const
 {
 	if (handIndex >= player.hands.size())
 		throw NoSuchHand();
@@ -80,13 +80,12 @@ const PlayingCards::Card* PlayerLogic::executeHit(
 	if (!(hand.state & DataLayer::PlayerHand::State::kSitting))
 		throw HandIsNotSitting();
 
-	const auto& newCard = &newCardF();
-	hand.cards.push_back(newCard);
+	hand.cards.push_back(newCardF());
 	if (m_pointsTools->isBusted(hand) || m_pointsTools->isBlackjack(hand))
 	{
 		hand.state = DataLayer::PlayerHand::State::kStanding;
 	}
-	return newCard;
+	return hand.cards.back().get();
 }
 
 void PlayerLogic::executeStand(

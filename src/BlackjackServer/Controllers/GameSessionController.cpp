@@ -78,10 +78,6 @@ void GameSessionController::endGame() const
 	m_dbContext->gameSession.state = GameSession::State::kNotStarted;
 	
 	m_dealerLogic->endTheGame();
-	for (auto& pair : m_dbContext->players)
-	{
-		delete pair.second;
-	}
 	m_dbContext->players.clear();
 	
 	const auto view = m_views->resetingTheGame_View();
@@ -216,10 +212,12 @@ void GameSessionController::createThePlayers(
 	for (const auto& user : users)
 	{
 		auto newPlayer = new DataLayer::PlayerModel({ user });
-		auto firstHand = new DataLayer::PlayerHand();
-		newPlayer->hands.push_back(firstHand);
+		newPlayer->hands.push_back(DataLayer::PlayerHandPtr(new PlayerHand()));
 		
-		m_dbContext->players.insert(std::make_pair(user->uniqueId, newPlayer));
+		m_dbContext->players.insert(
+			std::make_pair(
+				user->uniqueId,
+				DataLayer::PlayerModelPtr(newPlayer)));
 	}
 }
 
@@ -228,7 +226,7 @@ void GameSessionController::printInitialCardsSetup() const
 	const auto players = m_userManager->getPlayers();
 	const auto view = m_views->initialHandsSetup_View(
 	{
-		m_dbContext->gameSession.dealersHand->cards[0],
+		m_dbContext->gameSession.dealersHand->cards[0].get(),
 		&players
 	});
 
@@ -348,7 +346,7 @@ const PlayingCards::Card* GameSessionController::tryExecuteHit(
 	
 	try
 	{
-		const auto dealCardF = [&]() -> const PlayingCards::Card&
+		const auto dealCardF = [&]()
 		{
 			return m_dealerLogic->dealCard();
 		};

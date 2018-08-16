@@ -12,9 +12,9 @@ namespace PlayingCards
 		Shoe(size_t nbOfDecks = 1);
 		
 		void shuffle();
-		Card& dealCard();
+		CardPtr dealCard();
 	
 	private:
-		std::vector<Card*> m_cards;
+		std::vector<CardPtr> m_cards;
 	};
 }

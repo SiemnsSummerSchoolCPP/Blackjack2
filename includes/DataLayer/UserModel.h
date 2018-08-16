@@ -2,6 +2,7 @@
 
 #include "GameJoinState.h"
 #include <string>
+#include <memory>
 
 namespace DataLayer
 {
@@ -12,4 +13,6 @@ namespace DataLayer
 		double money = 0;
 		GameJoinState joinState;
 	};
+	
+	typedef std::unique_ptr<UserModel> UserModelPtr;
 }

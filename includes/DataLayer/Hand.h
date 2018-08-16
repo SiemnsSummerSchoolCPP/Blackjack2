@@ -8,7 +8,7 @@ namespace DataLayer
 {
 	struct Hand
 	{
-		std::vector<const PlayingCards::Card*> cards;
+		std::vector<PlayingCards::CardPtr> cards;
 	};
 	
 	std::ostream& operator << (std::ostream& o, const Hand& hand);

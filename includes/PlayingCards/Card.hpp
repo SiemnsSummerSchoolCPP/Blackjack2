@@ -2,6 +2,7 @@
 
 #include <ostream>
 #include <limits>
+#include <memory>
 
 namespace PlayingCards
 {
@@ -28,6 +29,8 @@ namespace PlayingCards
 		const char* suitStr() const;
 		const char* rankStr() const;
 	};
+	
+	typedef std::unique_ptr<Card> CardPtr;
 	
 	/*
 	** Body of Enums.

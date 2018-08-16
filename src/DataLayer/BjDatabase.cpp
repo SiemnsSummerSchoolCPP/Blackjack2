@@ -11,6 +11,6 @@ UserModel* BjDatabase::getUser(
 	if (users.find(connection.socket) == users.end())
 		throw "No such connection in database.";
 	
-	return users.at(connection.socket);
+	return users.at(connection.socket).get();
 }
 

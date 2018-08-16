@@ -33,7 +33,8 @@ int LobbyController::clientJoin(
 	user->name = generateGuestName(connection);
 	user->uniqueId = connection.socket;
 	user->money = LobbyController::initialMoney;
-	m_dbContext->users[connection.socket] = user;
+	m_dbContext->users.insert(
+		std::make_pair(connection.socket, UserModelPtr(user)));
 
 	auto model = Models::LobbyModels::ClientJoinModel();
 	model.name = user->name;

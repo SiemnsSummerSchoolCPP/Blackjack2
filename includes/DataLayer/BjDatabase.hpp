@@ -12,10 +12,11 @@ namespace DataLayer
 {
 	struct BjDatabase
 	{
-		std::unordered_map<int, UserModel*> users;
-		std::unordered_map<int, PlayerModel*> players;
+		std::unordered_map<int, UserModelPtr> users;
+		std::unordered_map<int, PlayerModelPtr> players;
 		GameSession gameSession;
 		
-		UserModel* getUser(const SocketConnection::Connection& connection) const;
+		UserModel* getUser(
+			const SocketConnection::Connection& connection) const;
 	};
 }

@@ -54,7 +54,7 @@ std::string PrintHelper::formatPlayerHand(
 }
 
 std::string PrintHelper::formatHands(
-	const std::vector<DataLayer::PlayerHand*>& hands) const
+	const std::vector<DataLayer::PlayerHandPtr>& hands) const
 {
 	std::stringstream ss;
 	

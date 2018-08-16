@@ -1,3 +1,8 @@
+#include "AppControllers.h"
+#include "AppViews.h"
+#include "AppServices.h"
+#include "AppLogic.h"
+
 #include "NetworkTools/RequestMapper.hpp"
 #include "NetworkTools/NetworkHost.hpp"
 #include "NetworkTools/NetworkHostModel.h"

@@ -18,7 +18,7 @@ namespace BlackjackLogic
 		void endTheGame() const;
 		
 		int dealersHandPoints() const;
-		PlayingCards::Card& dealCard() const;
+		PlayingCards::CardPtr dealCard() const;
 		
 		void dealFirstDealersCards() const;
 		void dealFinalDealersCards() const;

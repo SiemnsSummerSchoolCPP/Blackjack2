@@ -2,6 +2,7 @@
 
 #include "PlayingCards/Shoe.hpp"
 #include "Hand.h"
+#include <memory>
 
 namespace DataLayer
 {
@@ -17,7 +18,7 @@ namespace DataLayer
 		
 		GameSession::State state = State::kNotStarted;
 		
-		PlayingCards::Shoe* shoe = nullptr;
-		Hand* dealersHand = nullptr;
+		std::unique_ptr<PlayingCards::Shoe> shoe;
+		std::unique_ptr<Hand> dealersHand;
 	};
 }

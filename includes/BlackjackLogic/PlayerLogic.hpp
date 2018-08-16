@@ -34,7 +34,7 @@ namespace BlackjackLogic
 		const PlayingCards::Card* executeHit(
 			DataLayer::PlayerModel& player,
 			int handIndex,
-			std::function<const PlayingCards::Card& ()> newCardF) const;
+			std::function<PlayingCards::CardPtr ()> newCardF) const;
 		
 		void executeStand(
 			DataLayer::PlayerModel& player,

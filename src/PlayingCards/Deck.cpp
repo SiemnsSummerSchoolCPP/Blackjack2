@@ -20,19 +20,6 @@ Deck::Deck() : m_cards(freshDeck())
 {
 }
 
-Deck::~Deck()
-{
-	if (m_cards)
-	{
-		for (int i = 0; i < Deck::nbOfCards; i++)
-		{
-			if (m_cards[i])
-				delete m_cards[i];
-		}
-		delete[] m_cards;
-	}
-}
-
 /*
 ** Public methods
 */
@@ -79,29 +66,27 @@ static const Card::Suit suits[] =
 	Card::Suit::kHearts,
 };
 
-Card** Deck::freshDeck()
+std::vector<Card*> Deck::freshDeck()
 {
-	auto cards = new Card*[nbOfCards];
+	auto cards = std::vector<Card*>();
 	
 	const auto minRank = static_cast<int>(
 		std::numeric_limits<Card::Rank>::min());
 	const auto maxRank = static_cast<int>(
 		std::numeric_limits<Card::Rank>::max());
 
-	auto i = 0;
+	cards.reserve(Deck::nbOfCards);
 	for (const auto& suit : suits)
 	{
 		for (auto rank = minRank; rank <= maxRank; rank++)
 		{
-			cards[i] = new Card(
+			cards.push_back(new Card(
 				static_cast<Card::Suit>(suit),
 				static_cast<Card::Rank>(rank)
-			);
-			i++;
+			));
 		}
 	}
 	
-	assert(i == Deck::nbOfCards);
-	
+	assert(cards.size() == Deck::nbOfCards);
 	return cards;
 }

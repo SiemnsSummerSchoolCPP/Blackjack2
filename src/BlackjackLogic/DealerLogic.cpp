@@ -12,20 +12,15 @@ DealerLogic::DealerLogic(
 
 void DealerLogic::init() const
 {
-	m_dbContext->gameSession.shoe = new PlayingCards::Shoe(shoeSize);
-	m_dbContext->gameSession.dealersHand = new DataLayer::Hand();
+	m_dbContext->gameSession.shoe.reset(new PlayingCards::Shoe(shoeSize));
+	m_dbContext->gameSession.dealersHand.reset(new DataLayer::Hand());
 }
 
 void DealerLogic::endTheGame() const
 {
-//	if (m_dbContext->getGameSession().dealersHand)
-//		delete m_dbContext->getGameSession().dealersHand;
-//	
-//	if (m_dbContext->getGameSession().shoe)
-//		delete m_dbContext->getGameSession().shoe;
 }
 
-PlayingCards::Card& DealerLogic::dealCard() const
+PlayingCards::CardPtr DealerLogic::dealCard() const
 {
 	return getShoe().dealCard();
 }
@@ -36,7 +31,7 @@ void DealerLogic::dealFirstDealersCards() const
 	
 	for (int i = 0; i < 2; i++)
 	{
-		dealersHand.cards.push_back(&dealCard());
+		dealersHand.cards.push_back(dealCard());
 	}
 }
 
@@ -44,7 +39,7 @@ void DealerLogic::dealFinalDealersCards() const
 {
 	while (dealersHandPoints() < m_pointsTools->dealerPointsLimit)
 	{
-		m_dbContext->gameSession.dealersHand->cards.push_back(&dealCard());
+		m_dbContext->gameSession.dealersHand->cards.push_back(dealCard());
 	}
 }
 
@@ -56,7 +51,7 @@ void DealerLogic::dealPlayersCards() const
 		
 		for (int i = 0; i < 2; i++)
 		{
-			player.hands[0]->cards.push_back(&dealCard());
+			player.hands[0]->cards.push_back(dealCard());
 		}
 	}
 }

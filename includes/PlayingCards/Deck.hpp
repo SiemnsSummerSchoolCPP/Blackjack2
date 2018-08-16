@@ -13,16 +13,15 @@ namespace PlayingCards
 		struct NotEnoughCards;
 	
 		Deck();
-		~Deck();
 
-		static Card** freshDeck();
+		static std::vector<Card*> freshDeck();
 
 		bool isEmpty() const;
 		void shuffle();
 		Card& dealCard();
 
 	private:
-		Card** m_cards = nullptr;
+		std::vector<Card*> m_cards;
 		int m_cardIndex = 0;
 	};
 	

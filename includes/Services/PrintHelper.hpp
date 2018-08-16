@@ -18,7 +18,7 @@ namespace Services
 		std::string formatHand(const DataLayer::Hand& hand) const;
 		std::string formatPlayerHand(const DataLayer::PlayerHand& hand) const;
 		std::string formatHands(
-			const std::vector<DataLayer::PlayerHand*>&) const;
+			const std::vector<DataLayer::PlayerHandPtr>&) const;
 	
 	private:
 		const BlackjackLogic::PointsTools* m_pointsTools;

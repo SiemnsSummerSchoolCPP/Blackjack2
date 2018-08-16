@@ -3,6 +3,7 @@
 #include "Hand.h"
 #include "Bet.h"
 #include <ostream>
+#include <memory>
 
 namespace DataLayer
 {
@@ -17,4 +18,6 @@ namespace DataLayer
 		Bet bet;
 		PlayerHand::State state = PlayerHand::State::kSitting;
 	};
+	
+	typedef std::unique_ptr<PlayerHand> PlayerHandPtr;
 }
