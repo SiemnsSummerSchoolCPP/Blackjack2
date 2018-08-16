@@ -25,8 +25,7 @@ using namespace Requests;
 #define ADD_CONTROLLER_ACTION(mapper, header, function)						\
 	mapper.setAction(														\
 		static_cast<RequestHeader>(header),									\
-		[&](																\
-			const SocketConnection::Connection& connection,					\
+		[&](const SocketConnection::Connection& connection,					\
 			const Request* request)											\
 		{																	\
 			return function(connection, *request);							\
