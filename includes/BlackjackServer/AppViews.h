@@ -1,12 +1,16 @@
-//
-//  AppViews.h
-//  Project
-//
-//  Created by Emil Terman on 8/16/18.
-//
+#pragma once
 
-#ifndef AppViews_h
-#define AppViews_h
+#include "AppServices.h"
+#include "Views/LobbyViews.hpp"
+#include "Views/GameSessionViews.hpp"
 
-
-#endif /* AppViews_h */
+namespace BlackjackServer
+{
+	struct AppViews
+	{
+		AppViews(const AppServices* appServices);
+		
+		Views::LobbyViews lobbyViews;
+		Views::GameSessionViews gmSessionViews;
+	};
+}

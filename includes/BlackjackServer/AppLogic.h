@@ -1,12 +1,22 @@
-//
-//  AppLogic.h
-//  Project
-//
-//  Created by Emil Terman on 8/16/18.
-//
+#pragma once
 
-#ifndef AppLogic_h
-#define AppLogic_h
+#include "DataLayer/BjDatabase.hpp"
+#include "BlackjackLogic/PointsTools.hpp"
+#include "BlackjackLogic/PlayerHandLogic.hpp"
+#include "BlackjackLogic/PlayerLogic.hpp"
+#include "BlackjackLogic/DealerLogic.hpp"
+#include "BlackjackLogic/GameStatusLogic.hpp"
 
-
-#endif /* AppLogic_h */
+namespace BlackjackServer
+{
+	struct AppLogic
+	{
+		AppLogic(DataLayer::BjDatabase* dbContext);
+		
+		BlackjackLogic::PointsTools pointsTools;
+		BlackjackLogic::PlayerHandLogic playerHandLogic;
+		BlackjackLogic::PlayerLogic playerLogic;
+		BlackjackLogic::DealerLogic dealerLogic;
+		BlackjackLogic::GameStatusLogic gameStatusLogic;
+	};
+}

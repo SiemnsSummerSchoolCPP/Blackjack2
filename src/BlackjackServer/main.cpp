@@ -32,12 +32,8 @@ using namespace Requests;
 			return function(connection, *request);							\
 		});																	\
 
-static const RequestHeader kReceiveMsgHeader =
-	BlackjackClient
-		::Controllers
-		::MsgReadController
-		::RequestHeaders
-		::kReceiveMsg;
+const int kMoneyPrecision = 2;
+const char* const kMoneySymbol = "§";
 
 static void addLobbyControllerActions(
 	Controllers::LobbyController& ctrl,
@@ -89,7 +85,7 @@ static NetworkTools::NetworkHost buildNetworkHost(
 	const NetworkTools::RequestMapper& requestMapper)
 {
 	auto networkHostModel = NetworkTools::NetworkHostModel();
-	networkHostModel.port = 8000;
+	networkHostModel.port = port;
 	networkHostModel.requestMapper = &requestMapper;
 	
 	try
@@ -135,56 +131,30 @@ int main(const int argc, const char* const* const argv)
 	
 	auto requestMapper = NetworkTools::RequestMapper();
 	auto networkHost = buildNetworkHost(port, requestMapper);
-	
-	// Declare stuff.
 	auto dbContext = DataLayer::BjDatabase();
 	
-	// Declare blackjack logic.
-	auto pointsTools = BlackjackLogic::PointsTools();
-	auto playerHandLogic = BlackjackLogic::PlayerHandLogic();
-	auto playerLogic = BlackjackLogic::PlayerLogic(
-		&playerHandLogic,
-		&pointsTools);
-	auto dealerLogic = BlackjackLogic::DealerLogic(&pointsTools, &dbContext);
-	auto gmStatusLogic = BlackjackLogic::GameStatusLogic(
-		&dbContext,
-		&playerLogic);
+	auto appLogic = AppLogic(
+		&dbContext);
 	
-	// Services.
-	auto logger = Services::Logger();
-	auto userManager = Services::UserManager(&dbContext);
-	auto sendHelper = Services::SendHelper(
+	auto appServices = AppServices(
+		kMoneyPrecision,
+		kMoneySymbol,
 		&networkHost,
-		&logger,
-		kReceiveMsgHeader);
-	auto printHelper = Services::PrintHelper(&pointsTools, 2, "§");
-
-	// Views.
-	auto lobbyViews = Views::LobbyViews(&printHelper);
-	auto gmSessionViews = Views::GameSessionViews(&printHelper);
-
-	// Declare controllers.
-	auto gmSessionController = Controllers::GameSessionController(
-		&gmSessionViews,
-		&logger,
-		&sendHelper,
-		&userManager,
 		&dbContext,
-		&gmStatusLogic,
-		&playerLogic,
-		&dealerLogic);
+		&appLogic);
 	
-	auto lobbyController = Controllers::LobbyController(
-		&lobbyViews,
-		&logger,
-		&sendHelper,
-		&userManager,
+	auto appViews = AppViews(
+		&appServices);
+	
+	auto appControllers = AppControllers(
 		&dbContext,
-		&gmSessionController);
+		&appLogic,
+		&appServices,
+		&appViews);
 	
 	// Map controller's actions.
-	addLobbyControllerActions(lobbyController, requestMapper);
-	addGmSessionControllerActions(gmSessionController, requestMapper);
+	addLobbyControllerActions(appControllers.lobbyCtrl, requestMapper);
+	addGmSessionControllerActions(appControllers.gmSessionCtrl, requestMapper);
 
 	// Start.
 	continouslyParseNetworkInput(networkHost);

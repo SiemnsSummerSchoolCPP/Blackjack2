@@ -22,15 +22,11 @@ using namespace Requests;
 			return function(connection, *request);							\
 		});																	\
 
-
-
 static NetworkTools::NetworkClient buildNetworkClient(
 	const char* const ip,
 	const int port,
 	const NetworkTools::RequestMapper& requestMapper)
 {
-	
-
 	auto model = NetworkTools::NetworkClientModel();
 	model.ip = ip;
 	model.port = port;
