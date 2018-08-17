@@ -1,6 +1,7 @@
 #include "UserInputControllers/LobbyController.hpp"
 #include "BlackjackServer/Controllers/LobbyController.hpp"
 #include <regex>
+#include <iostream>
 
 using namespace BlackjackClient::UserInputControllers;
 
@@ -83,5 +84,29 @@ bool LobbyController::setReady(const std::string userInput) const
 			::LobbyController
 			::RequestHeaders::kSetReady;
 	m_networkClient->sendRequest(Requests::Request(header, "dummy str"));
+	return true;
+}
+
+bool LobbyController::exit(const std::string userInput) const
+{
+	if (userInput == "exit")
+		std::terminate();
+	return false;
+}
+
+bool LobbyController::help(const std::string userInput) const
+{
+	if (userInput != "help")
+		return false;
+	
+	std::cout
+		<< "send msg: <msg text>" << std::endl
+		<< "set name to <new name>" << std::endl
+		<< "'ready' to indicate that you're ready to start the game\n"
+		<< "bet <money : double>" << std::endl
+		<< "'hit' or 'h'" << std::endl
+		<< "'stand' or 's'" << std::endl
+		<< "exit" << std::endl;
+	
 	return true;
 }

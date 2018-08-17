@@ -59,6 +59,15 @@ static void addUserInLobbyControllerActions(
 {
 	cmdManager.subscribeParser([&](const std::string input) -> bool
 	{
+		return ctrl.exit(input);
+	});
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
+		return ctrl.help(input);
+	});
+	
+	cmdManager.subscribeParser([&](const std::string input) -> bool
+	{
 		return ctrl.sendMsg(input);
 	});
 	
@@ -163,8 +172,6 @@ int main(const int argc, const char* const* const argv)
 			continuouslyParseNetworkInput(networkClient);
 		});
 		continuouslyParseUserInput(cmdManager);
-		
-		networkWatcher.join();
 	}
 	return 0;
 }

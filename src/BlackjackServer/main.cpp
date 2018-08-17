@@ -132,8 +132,7 @@ int main(const int argc, const char* const* const argv)
 	auto networkHost = buildNetworkHost(port, requestMapper);
 	auto dbContext = DataLayer::BjDatabase();
 	
-	auto appLogic = AppLogic(
-		&dbContext);
+	auto appLogic = AppLogic(&dbContext);
 	
 	auto appServices = AppServices(
 		kMoneyPrecision,
@@ -142,8 +141,7 @@ int main(const int argc, const char* const* const argv)
 		&dbContext,
 		&appLogic);
 	
-	auto appViews = AppViews(
-		&appServices);
+	auto appViews = AppViews(&appServices);
 	
 	auto appControllers = AppControllers(
 		&dbContext,
