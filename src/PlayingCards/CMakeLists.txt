@@ -19,3 +19,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	RUNTIME_OUTPUT_DIRECTORY	"${CMAKE_SOURCE_DIR}/bin"
 	EXECUTABLE_OUTPUT_PATH		"${CMAKE_SOURCE_DIR}/bin"
 )
+
+# Flags
+String(CONCAT Flags ${Flags} " " "-Wall")
+String(CONCAT Flags ${Flags} " " "-Wextra")
+String(CONCAT Flags ${Flags} " " "-Werror")
+String(CONCAT Flags ${Flags} " " "-Waddress")
+Set(CMAKE_CXX_FLAGS "${Flags}")

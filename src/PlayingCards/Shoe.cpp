@@ -6,7 +6,7 @@ using namespace PlayingCards;
 
 Shoe::Shoe(size_t nbOfDecks)
 {
-	for (int i = 0; i < nbOfDecks; i++)
+	for (size_t i = 0; i < nbOfDecks; i++)
 	{
 		auto cards = Deck::freshDeck();
 		for (int i = 0; i < Deck::nbOfCards; i++)

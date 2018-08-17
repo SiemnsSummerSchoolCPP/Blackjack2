@@ -86,7 +86,7 @@ void GameSessionController::endGame() const
 }
 
 void GameSessionController::leaveGame(
-	const SocketConnection::Connection& connection,
+	const SocketConnection::Connection&,
 	const DataLayer::PlayerModel& player) const
 {
 	m_dbContext->players.erase(player.userModel->uniqueId);
@@ -140,7 +140,7 @@ int GameSessionController::betRequest(
 
 int GameSessionController::hitRequest(
 	const SocketConnection::Connection& connection,
-	const Requests::Request& request) const
+	const Requests::Request&) const
 {
 	if (!basicRequestValidation(GameSession::State::kHitStandPhase, connection))
 		return -1;
@@ -164,7 +164,7 @@ int GameSessionController::hitRequest(
 
 int GameSessionController::standRequest(
 	const SocketConnection::Connection& connection,
-	const Requests::Request& request) const
+	const Requests::Request&) const
 {
 	if (!basicRequestValidation(GameSession::State::kHitStandPhase, connection))
 		return -1;
@@ -211,7 +211,8 @@ void GameSessionController::createThePlayers(
 {
 	for (const auto& user : users)
 	{
-		auto newPlayer = new DataLayer::PlayerModel({ user });
+		auto newPlayer = new DataLayer::PlayerModel();
+		newPlayer->userModel = user;
 		newPlayer->hands.push_back(DataLayer::PlayerHandPtr(new PlayerHand()));
 		
 		m_dbContext->players.insert(

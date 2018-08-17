@@ -70,7 +70,7 @@ void PlayerLogic::executeBet(
 
 const PlayingCards::Card* PlayerLogic::executeHit(
 	DataLayer::PlayerModel& player,
-	const int handIndex,
+	const size_t handIndex,
 	std::function<PlayingCards::CardPtr ()> newCardF) const
 {
 	if (handIndex >= player.hands.size())
@@ -90,7 +90,7 @@ const PlayingCards::Card* PlayerLogic::executeHit(
 
 void PlayerLogic::executeStand(
 	DataLayer::PlayerModel& player,
-	const int handIndex) const
+	const size_t handIndex) const
 {
 	if (handIndex >= player.hands.size())
 		throw NoSuchHand();

@@ -27,7 +27,7 @@ LobbyController::LobbyController(
 
 int LobbyController::clientJoin(
 	const SocketConnection::Connection& connection,
-	const Requests::Request& request) const
+	const Requests::Request&) const
 {
 	auto user = new DataLayer::UserModel();
 	user->name = generateGuestName(connection);
@@ -47,7 +47,7 @@ int LobbyController::clientJoin(
 
 int LobbyController::clientLeave(
 	const SocketConnection::Connection& connection,
-	const Requests::Request& request) const
+	const Requests::Request&) const
 {
 	const auto& user = *m_dbContext->getUser(connection);
 
@@ -114,12 +114,11 @@ int LobbyController::changeName(
 	m_logger->logAction(connection, view);
 	m_sendHelper->broadcastMsg(view);
 	return 0;
-
 }
 
 int LobbyController::setReady(
 	const SocketConnection::Connection& connection,
-	const Requests::Request& request) const
+	const Requests::Request&) const
 {
 	auto user = m_dbContext->getUser(connection);
 	if (user->joinState.isReady)
