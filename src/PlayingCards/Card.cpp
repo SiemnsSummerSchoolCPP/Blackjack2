@@ -36,6 +36,7 @@ const char* Card::suitStr() const
 		case Card::Suit::kHearts:
 			return "♥";
 	}
+	throw;
 }
 
 const char* Card::rankStr() const
@@ -69,6 +70,7 @@ const char* Card::rankStr() const
 		case Card::Rank::kAce:
 			return "A";
 	}
+	throw;
 }
 
 /*
