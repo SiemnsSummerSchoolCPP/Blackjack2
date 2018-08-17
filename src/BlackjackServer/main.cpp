@@ -132,6 +132,7 @@ int main(const int argc, const char* const* const argv)
 	auto networkHost = buildNetworkHost(port, requestMapper);
 	auto dbContext = DataLayer::BjDatabase();
 	
+	// 'Dependency injection'.
 	auto appLogic = AppLogic(&dbContext);
 	
 	auto appServices = AppServices(
@@ -152,6 +153,8 @@ int main(const int argc, const char* const* const argv)
 	// Map controller's actions.
 	addLobbyControllerActions(appControllers.lobbyCtrl, requestMapper);
 	addGmSessionControllerActions(appControllers.gmSessionCtrl, requestMapper);
+
+	std::cout << "Everything is setup. Waiting for incoming actions.\n";
 
 	// Start.
 	continouslyParseNetworkInput(networkHost);
