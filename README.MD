@@ -3,14 +3,14 @@
 This project was successfully run on both MacOS and Ubuntu 18.
 
 ## How to run:
-  1. Run the BlackjackServer executable first. It's only argument is the port. Ex: './BlackjackServer 8000'.
+  1. Run the BlackjackServer executable first. Its only argument is the port. Ex: './BlackjackServer 8000'.
   2. Once it's running, on different terminals run a some clients. First argument is the local IP of the server (127.0.0.1 if it's on the same machine or 192. ... if it's on a different computer). The second argument is the port.
   Ex: './BlackjackClient 127.0.0.1 8000'.
 
 ## How to play:
   As a client, type *help* for the available commands.
 
-  Once everyone is connected, you can change your name or broadcast a message. To start the game, everyone has to type *ready*.
+  You can change your name or broadcast a message. To start the game, everyone has to type *ready*.
 
 ## Implementation
 For this project I tried to use the MVC pattern in BlackjackServer & BlackjackClient. Also, to separate the logic from networking and Data, I used the n-tier architecture. I have also used Dependency Injection for easier manipulations.
