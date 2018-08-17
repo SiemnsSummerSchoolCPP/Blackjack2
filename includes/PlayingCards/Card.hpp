@@ -62,12 +62,15 @@ namespace PlayingCards
 	};
 }
 
-template<> class std::numeric_limits<PlayingCards::Card::Rank>
+namespace std
 {
-public:
-	static PlayingCards::Card::Rank min();
-	static PlayingCards::Card::Rank max();
-};
+	template<> class numeric_limits<PlayingCards::Card::Rank>
+	{
+	public:
+		static PlayingCards::Card::Rank min();
+		static PlayingCards::Card::Rank max();
+	};
+}
 
 namespace std
 {
